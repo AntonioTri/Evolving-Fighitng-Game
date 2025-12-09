@@ -1,0 +1,67 @@
+extends Area2D
+class_name CollisionBox
+
+# Tipo della collision box
+enum BoxType {
+	HURTBOX,
+	HITBOX,
+	PARRY
+}
+
+# Variabili export che aiutano a settare i dettagli interni dall'ispettore
+@export var box_type: BoxType
+@export var owner_entity: AbstractEntity
+@export var damage : int
+
+# La funzione ready collega al segnale area_entered la funzione handler per la collisione
+func _ready() -> void:
+	connect("area_entered", _on_area_entered)
+
+
+# Funzione generale per gestire le collisioni
+func _on_area_entered(box: Area2D) -> void:
+	# Controlliamo se sia una CollisionBox
+	if box is not CollisionBox:
+		return
+
+	# Puntatore tipizzato, obbligatorio in quanto non vi è un referencing 
+	# tipizzato nella chiamata del segnale
+	var cbox := box as CollisionBox
+
+	if self.box_type == BoxType.HURTBOX and cbox.box_type == BoxType.HITBOX:
+		hurt_owner(cbox.damage)
+	elif self.box_type == BoxType.PARRY and cbox.box_type == BoxType.HITBOX:
+		parry_entity(cbox.owner_entity)
+	else:
+		print("Collision detected")
+
+
+# Handler per far prendere danno al proprietario della HurtBox
+func hurt_owner(damage_to_gain : int):
+	
+	# Frame Freeze
+	if damage_to_gain > 10:
+		GlobalF.hitstop(0.001, 0.2)
+
+	if owner_entity:
+		owner_entity.take_damage(damage_to_gain)
+	else:
+		print("Gaining Damage: ", damage_to_gain)
+
+
+# Handler per staggerare l'entità parriata
+func parry_entity(entity : AbstractEntity):
+	
+	if entity is Player:
+		var player = entity as Player
+		player.get_parried()
+	elif entity is AbstractEnemy:
+		var enemy = entity as AbstractEnemy
+		enemy.get_parried_with_damage(damage)
+	else:
+		print("Dummy parried")
+
+
+func set_damage(value : int):
+	if box_type == BoxType.HITBOX:
+		self.damage = value

@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cdofpsqi7asw4"]
+
+[ext_resource type="Script" uid="uid://d3ior4y5ods00" path="res://scripts/CollisionBoxSystem/collisionBox.gd" id="1_k5f3b"]
+[ext_resource type="Texture2D" uid="uid://co5a1al3ywc6g" path="res://icon.svg" id="1_kre8v"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k5f3b"]
+size = Vector2(33.5, 33.5)
+
+[node name="Area2D" type="Area2D"]
+script = ExtResource("1_k5f3b")
+
+[node name="HurtBox" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_k5f3b")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 1.9073486e-06)
+scale = Vector2(0.26171875, 0.2578125)
+texture = ExtResource("1_kre8v")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

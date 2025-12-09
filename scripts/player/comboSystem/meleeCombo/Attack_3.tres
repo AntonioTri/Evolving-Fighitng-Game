@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="ComboAttack" load_steps=2 format=3 uid="uid://4vnjh1a4gx2e"]
+
+[ext_resource type="Script" uid="uid://b6leb55we2s6s" path="res://scripts/comboSystem/ComboAttack.gd" id="1_34s63"]
+
+[resource]
+script = ExtResource("1_34s63")
+animation_name = "sword_attack_3"
+metadata/_custom_type_script = "uid://b6leb55we2s6s"
