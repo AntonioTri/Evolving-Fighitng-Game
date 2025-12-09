@@ -26,6 +26,8 @@ var parry_number : int
 var direction : int
 # La variabile che conserva lo stato
 var state : EnemyState
+# Variabil interna per referenziarsi al player quando si è in combattimento
+var player : Player = null
 # Variabili booleane per conservare stati interni miniori
 var can_move : bool = false
 var can_attack : bool = false
@@ -36,6 +38,9 @@ var can_attack : bool = false
 @onready var left_wall_ray_cast: RayCast2D = $RaycastingMovement/LeftWallRayCast
 @onready var right_floor_ray_cast: RayCast2D = $RaycastingMovement/RightFloorRayCast
 @onready var left_floor_ray_cast: RayCast2D = $RaycastingMovement/LeftFloorRayCast
+@onready var vision_ray_cast: RayCast2D = $SightOfView/RayCast2D
+@onready var aggro_range: Area2D = $SightOfView
+@onready var sprite: Sprite2D = $Sprite2D
 
 
 # Called when the node enters the scene tree for the first time.
@@ -46,34 +51,36 @@ func _ready() -> void:
 	direction = Direction.RIGHT if randi_range(0, 1) == 1 else Direction.LEFT
 	# Impostazione dello stato su IDLE
 	state = EnemyState.IDLE
+	# Connessione dei segnali per gestire il campo visivo
+	aggro_range.body_entered.connect(_on_body_entered)
+	aggro_range.body_exited.connect(_on_body_exited)
 
 
 func _process(_delta: float) -> void:
 	react()
+
 
 func _physics_process(delta: float) -> void:
 	apply_gravity(delta)
 	move()
 
 
-
 # La funzione react gestisce le interazioni con il player e l'ambiente
 # Calcolato normalmente, separato dai calcoli della fisica
 func react():
-	if not can_attack: # La funzione ritorna e blocca il react se non è permesso 
-		return
 	
 	match state:
 		EnemyState.ATTACKING:
-			attack()
+			if can_attack:
+				attack()
 		EnemyState.DYING:
 			die()
-
 
 
 # La logica del patrolling, che definisce il movimento, l'allert
 # Calcolato nella fisica degli oggetti
 func move():
+	
 	if not can_move: # La funzione ritorna e blocca il movimento se non è permesso 
 		return
 	
@@ -86,7 +93,6 @@ func move():
 			moving_toward_player()
 
 
-
 # Questi metodi vengono lasciati vuoti per permettere ad ogni tipologia di nemico
 # di implementarle a piacimento
 func idleing():
@@ -95,11 +101,29 @@ func idleing():
 		can_move = true
 		update_state(EnemyState.PATROLLING)
 
+
+# Questa funzione cambia la direzione del movimento i base alla direzione del player
 func moving_toward_player():
-	print("Enemy moving to player")
+	
+	if player == null:
+		return
+
+	# Calcolo della direzione verso il player
+	if player.global_position.x > global_position.x:
+		direction = Direction.RIGHT
+		sprite.flip_h = false
+	else:
+		direction = Direction.LEFT
+		sprite.flip_h = true
+
+	# Movimento verso il player
+	velocity.x = SPEED * direction
+	move_and_slide()
+
 
 func attack():
 	print("Enemy attacking!")
+
 
 # L'unica implementata è quella di patrolling che generalmente funziona uguale per tutti i nemici
 func patrolling():
@@ -142,10 +166,12 @@ func get_stunned():
 	# !!!!! PLACEHOLDER !!!!!
 	reset_needed_parry_number() # Questa funzione sta qua per testing
 
+
 # Funzione che cambia lo stato interno
 func update_state(new_state : EnemyState):
 	state = new_state
 	print("Status changed to ", state)
+
 
 # Banale funzione per applicare la gravità
 func apply_gravity(delta):
@@ -155,11 +181,69 @@ func apply_gravity(delta):
 	else:
 		can_move = true
 
+
+# Funzione handler del segnale di quando il player entra nel campo visivo
+func _on_body_entered(body : Node2D):
+	
+	print("Something in range of vision")
+	
+	if body.is_in_group("player"):
+		print("Player Found")
+		player = body as Player
+		# Ottenuta la reference facciamo puntare il raycast verso la posizione del player
+		point_raycast_to_player()
+		
+		if is_player_visible():
+			if state != EnemyState.MOVING_TOWARD_PLAYER:
+				update_state(EnemyState.MOVING_TOWARD_PLAYER)
+				print("Moving to player")
+			else:
+				if state == EnemyState.MOVING_TOWARD_PLAYER:
+					update_state(EnemyState.PATROLLING)
+					print("Back to patrolling")
+
+
+# Questa funzione aggiorna la posizione del raycast per 
+# puntarlo verso la direzione del player
+func point_raycast_to_player() -> void:
+	if player == null:
+		return
+	
+	# Direzione dal nemico al player
+	var dir := player.global_position - global_position
+	
+	# Il RayCast2D vuole una posizione locale come target
+	vision_ray_cast.target_position = dir
+	vision_ray_cast.force_raycast_update()
+
+
+# Invece questa funzione ci aiuta a capire se il vision raycast incrocia il player
+func is_player_visible() -> bool:
+	if player == null:
+		return false
+	
+	vision_ray_cast.force_raycast_update()
+	
+	if not vision_ray_cast.is_colliding():
+		return false
+	
+	var hit := vision_ray_cast.get_collider()
+	return hit == player
+
+
+# Funzine handler di quando il player esce dal campo visivo
+func _on_body_exited(body : Node2D):
+	if body == player:
+		player = null
+		update_state(EnemyState.PATROLLING)
+
+
 # Questa funzione ritorna true se il nemico può camminare a destra, altrimenti ritorna false
 func can_walk_right() -> bool:
 	if right_floor_ray_cast.is_colliding() and not right_wall_ray_cast.is_colliding():
 		return true
 	return false
+
 
 # Questa funzione ritorna true se il nemico può camminare a destra, altrimenti ritorna false
 func can_walk_left() -> bool:
@@ -167,8 +251,39 @@ func can_walk_left() -> bool:
 		return true
 	return false
 
+
+# Funzione che gestisce la logica di danno
+func take_damage(value : int):
+	
+	# Viene skippato tutto se l'entità sta morendo
+	if invulnerability:
+		return
+	
+	if health - value <= 0:
+		print("Enemy "+ str(enemy_type) + " dieing.")
+		update_state(EnemyState.DYING)
+		# Viene anche impostata la flag per l'attacco a false per impedire bug
+		can_attack = false
+		# L'entità viene anche resa invulnerabile per darle il tempo di morire
+		# Anche per evitare dei possibili bug
+		make_invulnerable()
+	else:
+		health -= value
+		print("Enemy "+ str(enemy_type) + " got damaged with " + str(value) + " damage. Current health: " + str(health))
+
+
+# La funzione che gestisce la morte della entità
+func die():
+	
+	#$AnimationPlayer.play("death")
+	#await $AnimationPlayer.animation_finished
+	print("Rimozione dalla scena")
+	queue_free()
+
+
 func get_knockbacked():
 	print("Enemy got knockbacked.")
+
 
 func reset_needed_parry_number():
 	stun_parry_needed = parry_number

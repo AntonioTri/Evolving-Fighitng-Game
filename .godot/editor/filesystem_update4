@@ -1,0 +1,11 @@
+res://scenes/Player.tscn
+res://scenes/game.tscn
+res://scenes/AbstractEnemy.tscn
+res://scripts/Enemies/AbstractEnemy.gd
+res://scripts/Enemies/AbstractEnemy.tscn
+res://scripts/CollisionBoxSystem/ParryBox.tscn
+res://scripts/CollisionBoxSystem/HitBox.tscn
+res://scripts/CollisionBoxSystem/HurtBox.tscn
+res://scripts/player/Player.tscn
+res://scripts/EntitySystem/AbstractEntity.gd
+res://scripts/player/Player.gd
