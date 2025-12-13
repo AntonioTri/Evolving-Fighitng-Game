@@ -65,7 +65,12 @@ func _process(_delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	
 	apply_gravity(delta)
+	print("Can move: " + str(can_move))
+	if not can_move: # La funzione ritorna e blocca il movimento se non è permesso 
+		return
+	
 	move()
 	update_vision_raycast()
 
@@ -85,10 +90,7 @@ func react():
 # La logica del patrolling, che definisce il movimento, l'allert
 # Calcolato nella fisica degli oggetti
 func move():
-	
-	if not can_move: # La funzione ritorna e blocca il movimento se non è permesso 
-		return
-	
+	print("Moving state: " + str(state))
 	match state:
 		EnemyState.IDLE:
 			idleing()
@@ -107,32 +109,9 @@ func idleing():
 		update_state(EnemyState.PATROLLING)
 
 
-# Questa funzione cambia la direzione del movimento i base alla direzione del player
-func moving_toward_player():
-	
-	if player == null:
-		return
-
-	# Calcolo della direzione verso il player
-	if player.global_position.x > global_position.x:
-		direction = Direction.RIGHT
-		sprite.flip_h = false
-	else:
-		direction = Direction.LEFT
-		sprite.flip_h = true
-
-	# Movimento verso il player
-	velocity.x = SPEED * direction
-	move_and_slide()
-
-
-func attack():
-	print("Enemy attacking!")
-
-
 # L'unica implementata è quella di patrolling che generalmente funziona uguale per tutti i nemici
 func patrolling():
-	
+
 	# Scelta della direzione in base al raycasting
 	if direction == Direction.RIGHT:
 		if can_walk_right():
@@ -161,31 +140,27 @@ func patrolling():
 			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
 
 
-# Quando questa funzione viene chiamata viene sottratto un parry necessario allo stunn
-# se siamo a 0 il nemico viene stunnato
-func get_parried_with_damage(value : int):
-	# Per prima cosa controlliamo se col danno preso il nemico deve morire
-	# in tal caso la funzione take_damage finirà l'handler da sola
-	take_damage(value)
+# Questa funzione cambia la direzione del movimento i base alla direzione del player
+func moving_toward_player():
 	
-	# Banale logica di parry
-	if stun_parry_needed > 0:
-		stun_parry_needed -= 1
+	if player == null:
+		return
+
+	# Calcolo della direzione verso il player
+	if player.global_position.x > global_position.x:
+		direction = Direction.RIGHT
+		sprite.flip_h = false
 	else:
-		get_stunned()
-	print("Enemy got parried.")
+		direction = Direction.LEFT
+		sprite.flip_h = true
 
-
-func get_stunned():
-	print("Enemy got stunned.")
-	# !!!!! PLACEHOLDER !!!!!
-	reset_needed_parry_number() # Questa funzione sta qua per testing
+	# Movimento verso il player
+	velocity.x = SPEED * direction
+	move_and_slide()
 
 
 # Funzione handler del segnale di quando il player entra nel campo visivo
 func _on_body_entered(body : Node2D):
-	
-	print("Something in range of vision")
 	
 	if body.is_in_group("player"):
 		print("Player Found")
@@ -203,7 +178,14 @@ func _on_body_exited(body : Node2D):
 		update_state(EnemyState.PATROLLING)
 
 
-func folow_player():
+# Questa funzione aggiorna il raycast di visione per seguire il player
+# quando questo è nel range di visione
+func update_vision_raycast():
+	if player_in_range:
+		follow_player()
+
+
+func follow_player():
 	# Ottenuta la reference facciamo puntare il raycast verso la posizione del player
 	if player == null:
 		return
@@ -218,12 +200,6 @@ func folow_player():
 		if state == EnemyState.MOVING_TOWARD_PLAYER:
 			update_state(EnemyState.PATROLLING)
 			print("Back to patrolling")
-
-
-
-func update_vision_raycast():
-	if player_in_range:
-		folow_player()
 
 
 # Questa funzione aggiorna la posizione del raycast per 
@@ -254,32 +230,50 @@ func is_player_visible() -> bool:
 	return hit == player
 
 
-# Questa funzione ritorna true se il nemico può camminare a destra, altrimenti ritorna false
-func can_walk_right() -> bool:
-	return right_floor_ray_cast.is_colliding() and not right_wall_ray_cast.is_colliding()
+func attack():
+	print("Enemy attacking!")
 
 
-# Questa funzione ritorna true se il nemico può camminare a destra, altrimenti ritorna false
-func can_walk_left() -> bool:
-	return left_floor_ray_cast.is_colliding() and not left_wall_ray_cast.is_colliding()
+# Quando questa funzione viene chiamata viene sottratto un parry necessario allo stunn
+# se siamo a 0 il nemico viene stunnato
+func get_parried_with_damage(value : int):
+	# Per prima cosa controlliamo se col danno preso il nemico deve morire
+	# in tal caso la funzione take_damage finirà l'handler da sola
+	take_damage(value)
+	
+	# Banale logica di parry
+	if stun_parry_needed > 0:
+		stun_parry_needed -= 1
+	else:
+		get_stunned()
+	print("Enemy got parried.")
+
+
+func get_stunned():
+	print("Enemy got stunned.")
+	# !!!!! PLACEHOLDER !!!!!
+	reset_needed_parry_number() # Questa funzione sta qua per testing
 
 
 # Funzione che gestisce la logica di danno
 func take_damage(value : int):
 	
 	# Viene skippato tutto se l'entità sta morendo
-	if invulnerability:
+	if invulnerability or not is_player_visible():
 		return
+	
+	# Hit flashper feedback
+	flash_white(0.2)
 	
 	if health - value <= 0:
 		# L'entità viene resa invulnerabile per darle il tempo di morire
 		# Anche per evitare dei possibili bug
 		make_invulnerable()
-		print("Enemy "+ str(enemy_type) + " dieing.")
-		update_state(EnemyState.DYING)
 		# Viene anche impostata la flag per l'attacco a false per impedire bug
 		can_attack = false
 		can_move = false
+		print("Enemy "+ str(enemy_type) + " dieing.")
+		update_state(EnemyState.DYING)
 	
 	else:
 		health -= value
@@ -291,7 +285,7 @@ func apply_gravity(delta):
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 		move_and_slide()
-	else:
+	elif state != EnemyState.DYING:
 		can_move = true
 
 
@@ -304,13 +298,40 @@ func die():
 	queue_free()
 
 
+# Questa funzione ritorna true se il nemico può camminare a destra, altrimenti ritorna false
+func can_walk_right() -> bool:
+	return right_floor_ray_cast.is_colliding() and not right_wall_ray_cast.is_colliding()
+
+
+# Questa funzione ritorna true se il nemico può camminare a destra, altrimenti ritorna false
+func can_walk_left() -> bool:
+	return left_floor_ray_cast.is_colliding() and not left_wall_ray_cast.is_colliding()
+
 # Funzione che cambia lo stato interno
-func update_state(new_state : EnemyState):
+func update_state(new_state: EnemyState):
+	if state == new_state:
+		return
 	state = new_state
 
 
 func get_knockbacked():
 	print("Enemy got knockbacked.")
+
+# Hit flash per qunado un nemico viene colpito
+func flash_white(duration := 0.1):
+	var mat := sprite.material as ShaderMaterial
+	if mat == null:
+		return
+
+	mat.set_shader_parameter("flash_strength", 1.0)
+
+	var tween := get_tree().create_tween()
+	tween.tween_property(
+		mat,
+		"shader_parameter/flash_strength",
+		0.0,
+		duration
+	)
 
 
 func reset_needed_parry_number():

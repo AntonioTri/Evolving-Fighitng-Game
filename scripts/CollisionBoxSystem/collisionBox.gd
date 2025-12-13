@@ -4,7 +4,7 @@ class_name CollisionBox
 # Tipo della collision box
 enum BoxType {
 	HURTBOX,
-	HITBOX,
+	ATTACKBOX,
 	PARRY
 }
 
@@ -28,9 +28,9 @@ func _on_area_entered(box: Area2D) -> void:
 	# tipizzato nella chiamata del segnale
 	var cbox := box as CollisionBox
 
-	if self.box_type == BoxType.HURTBOX and cbox.box_type == BoxType.HITBOX:
+	if self.box_type == BoxType.HURTBOX and cbox.box_type == BoxType.ATTACKBOX:
 		hurt_owner(cbox.damage)
-	elif self.box_type == BoxType.PARRY and cbox.box_type == BoxType.HITBOX:
+	elif self.box_type == BoxType.PARRY and cbox.box_type == BoxType.ATTACKBOX:
 		parry_entity(cbox.owner_entity)
 	else:
 		print("Collision detected")
@@ -63,5 +63,5 @@ func parry_entity(entity : AbstractEntity):
 
 
 func set_damage(value : int):
-	if box_type == BoxType.HITBOX:
+	if box_type == BoxType.ATTACKBOX:
 		self.damage = value

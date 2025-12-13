@@ -1,16 +1,25 @@
-[gd_scene load_steps=8 format=3 uid="uid://c3lken4ggiqp4"]
+[gd_scene load_steps=11 format=3 uid="uid://c3lken4ggiqp4"]
 
 [ext_resource type="Script" uid="uid://fgr4k5las8am" path="res://scripts/Enemies/AbstractEnemy.gd" id="1_5x1c5"]
+[ext_resource type="Shader" uid="uid://c6l4nik8csequ" path="res://scripts/utils/hit_flash.gdshader" id="2_2kg87"]
 [ext_resource type="Texture2D" uid="uid://7u60d7pyp7pe" path="res://textures/Enemies/BushGuardian/Enemy.png" id="2_hp5u7"]
-[ext_resource type="PackedScene" uid="uid://cdofpsqi7asw4" path="res://scripts/CollisionBoxSystem/HitBox.tscn" id="3_godhf"]
+[ext_resource type="PackedScene" uid="uid://cdofpsqi7asw4" path="res://scripts/CollisionBoxSystem/AttackBox.tscn" id="3_godhf"]
 [ext_resource type="PackedScene" uid="uid://d1m7x0feb7cba" path="res://scripts/CollisionBoxSystem/HurtBox.tscn" id="4_2kg87"]
 [ext_resource type="PackedScene" uid="uid://hxodfbwi7sn4" path="res://scripts/CollisionBoxSystem/ParryBox.tscn" id="5_u67ka"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u67ka"]
+shader = ExtResource("2_2kg87")
+shader_parameter/flash_strength = 0.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hp5u7"]
 size = Vector2(34, 34)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uo67k"]
 radius = 157.00319
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_2kg87"]
+a = Vector2(-90, 0)
+b = Vector2(98, 0)
 
 [node name="AbstractEnemyNode" type="CharacterBody2D"]
 script = ExtResource("1_5x1c5")
@@ -21,6 +30,7 @@ stun_parry_needed = 2
 health = 30
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_u67ka")
 scale = Vector2(0.535, 0.535)
 texture = ExtResource("2_hp5u7")
 
@@ -63,7 +73,6 @@ collision_mask = 3
 
 [node name="Hitbox" parent="CollisionBoxes" node_paths=PackedStringArray("owner_entity") instance=ExtResource("3_godhf")]
 position = Vector2(-41, -2)
-box_type = 1
 owner_entity = NodePath("../..")
 
 [node name="HurtBox" parent="CollisionBoxes" node_paths=PackedStringArray("owner_entity") instance=ExtResource("4_2kg87")]
@@ -72,3 +81,13 @@ owner_entity = NodePath("../..")
 [node name="ParryBox" parent="CollisionBoxes" node_paths=PackedStringArray("owner_entity") instance=ExtResource("5_u67ka")]
 position = Vector2(0, -33)
 owner_entity = NodePath("../..")
+
+[node name="AttackRange" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="AttackRange"]
+position = Vector2(0, -60)
+shape = SubResource("SegmentShape2D_2kg87")
+
+[editable path="CollisionBoxes/Hitbox"]
+[editable path="CollisionBoxes/HurtBox"]
+[editable path="CollisionBoxes/ParryBox"]

@@ -25,7 +25,7 @@ func react():
 			animator.play("stunned")
 		
 		
-		EnemyState.ROTATING: 
+		EnemyState.ROTATING:
 			change_direction()
 
 
@@ -41,8 +41,43 @@ func die():
 func change_direction():
 	can_move = false
 	can_attack = false
-	animator.play("rotate")
+	if animator.current_animation != "rotate":
+		animator.play("rotate")
 
+
+# L'unica implementata è quella di patrolling che generalmente funziona uguale per tutti i nemici
+func patrolling():
+
+	if animator.current_animation != "walk":
+		sprite.flip_h = ( direction == Direction.LEFT )
+		animator.play("walk")
+
+	# Scelta della direzione in base al raycasting
+	if direction == Direction.RIGHT:
+		if can_walk_right():
+			# Applicazione del vettore velocità
+			velocity.x = SPEED
+			# Funzione che muove il corpo della entity
+			move_and_slide()
+		else:
+			print("Rotating to left")
+			velocity.x = 0
+			direction = Direction.LEFT
+			can_move = false
+			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
+	
+	elif direction == Direction.LEFT:
+		if can_walk_left():
+			# Applicazione del vettore velocità
+			velocity.x = -SPEED
+			# Funzione che muove il corpo della entity
+			move_and_slide()
+		else:
+			print("Rotating to right")
+			velocity.x = 0
+			direction = Direction.RIGHT
+			can_move = false
+			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
 
 
 # Segnale di fine animazione per gestire i comportamenti legati ad esse
@@ -61,4 +96,4 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 			can_move = true
 			can_attack = true
 			# In base alla direzione viene ruotato lo sprite alla fine della animazione
-			sprite.flip_h = ( direction == Direction.LEFT )
+			update_state(EnemyState.PATROLLING)
