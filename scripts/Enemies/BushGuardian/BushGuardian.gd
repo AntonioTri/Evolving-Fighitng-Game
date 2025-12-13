@@ -50,15 +50,18 @@ func react(delta: float):
 		
 		EnemyState.STUNNED:
 			animator.play("stunned")
-		
-		
-		EnemyState.ROTATING:
-			change_direction()
 
 
 func idleing():
 	if animator.current_animation != "idle":
 		animator.play("idle")
+
+
+# Script dedicato per gestire il behavior
+func do_walk_animation():
+	if animator.current_animation != "walk":
+		sprite.flip_h = ( direction == Direction.LEFT )
+		animator.play("walk")
 
 
 # La funzione che gestisce la morte della entità
@@ -75,41 +78,6 @@ func change_direction():
 	can_attack = false
 	if animator.current_animation != "rotate":
 		animator.play("rotate")
-
-
-# L'unica implementata è quella di patrolling che generalmente funziona uguale per tutti i nemici
-func patrolling():
-
-	if animator.current_animation != "walk":
-		sprite.flip_h = ( direction == Direction.LEFT )
-		animator.play("walk")
-
-	# Scelta della direzione in base al raycasting
-	if direction == Direction.RIGHT:
-		if can_walk_right():
-			# Applicazione del vettore velocità
-			velocity.x = SPEED
-			# Funzione che muove il corpo della entity
-			move_and_slide()
-		else:
-			print("Rotating to left")
-			velocity.x = 0
-			direction = Direction.LEFT
-			block_movement()
-			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
-	
-	elif direction == Direction.LEFT:
-		if can_walk_left():
-			# Applicazione del vettore velocità
-			velocity.x = -SPEED
-			# Funzione che muove il corpo della entity
-			move_and_slide()
-		else:
-			print("Rotating to right")
-			velocity.x = 0
-			direction = Direction.RIGHT
-			allow_movement()
-			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
 
 
 # La funzione di attacco del Bush Guardian
@@ -133,15 +101,14 @@ func attack(_delta: float):
 				animator.play("attack_2")
 
 
-
 # Funzione per controllare se il player è attaccabile in uno dei due range
 func is_player_attackable():
-	if ( player_in_melee_range() or player_in_pull_range() ) and attack_timer >= attack_cd:
+	if ( player_in_melee_range() or player_in_pull_range() ) \
+	and attack_timer >= attack_cd:
 		return true
 
 
 func attack_behavior():
-	print("Enemy can attack!")
 	block_movement()
 	allow_attack()
 	update_state(EnemyState.ATTACKING)
@@ -173,28 +140,25 @@ func player_in_pull_range() -> bool:
 	return false
 
 
-# Script dedicato per gestire il behavior
-func do_walk_animation():
-	if animator.current_animation != "walk":
-		animator.play("walk")
-
-
 # Funzione per tentare di eseguire un combo di attacchi
 # se il player è tropo lontano torna a muoversi verso di lui
 # Vinee chiamata dall'animation manager durante l'animazione di attacco per concatenare correttamente
 # le due animazioni 
 func try_to_combo():
 	if attack_step == 0 and player_in_melee_range():
-		print("Combo window opened")
 		combo_requested = true
 
 
+func is_player_near():
+	if player == null:
+		return false
+	
+	var distance := global_position.distance_to(player.global_position)
+	return distance <= melee_range.get_node("Shape").shape.radius
 
 
 # Segnale di fine animazione per gestire i comportamenti legati ad esse
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	
-	print("Animation finished: ", anim_name)
 	
 	match anim_name:
 		
@@ -203,16 +167,14 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 			queue_free()
 			
 		"rotate": # Quando ha finito di ruotare il movimento e l'attacco gli vengono ridati
-			print("Rotation finished")
 			allow_movement()
 			allow_attack()
 			# In base alla direzione viene ruotato lo sprite alla fine della animazione
-			update_state(EnemyState.PATROLLING)
+			update_state(state_pre_rotating)
 		
 		"attack_1":
 			if combo_requested or attack_step == 1:
 				return # recovery cancellata
-
 			allow_movement()
 			block_attack()
 			update_state(EnemyState.MOVING_TOWARD_PLAYER)

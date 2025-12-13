@@ -10,3 +10,4 @@ res://scripts/CollisionBoxSystem/HurtBox.tscn
 res://scripts/CollisionBoxSystem/ParryBox.tscn
 res://scripts/CollisionBoxSystem/collisionBox.gd
 res://scripts/CollisionBoxSystem/AttackBox.tscn
+res://scripts/comboSystem/ComboScript.gd

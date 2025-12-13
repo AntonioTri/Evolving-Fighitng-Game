@@ -34,7 +34,6 @@ func play_attack():
 	can_chain = false
 	in_recovery = false
 	animator.play(current_attack.animation_name)
-	print("Attacco : ", current_attack.animation_name)
 
 
 func animation_ended() :

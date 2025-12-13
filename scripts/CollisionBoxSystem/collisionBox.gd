@@ -32,8 +32,6 @@ func _on_area_entered(box: Area2D) -> void:
 		hurt_owner(cbox.owner_entity, cbox.damage)
 	elif self.box_type == BoxType.PARRY and cbox.box_type == BoxType.ATTACKBOX:
 		parry_entity(cbox.owner_entity)
-	else:
-		print("Collision detected")
 
 
 # Handler per far prendere danno al proprietario della HurtBox

@@ -683,7 +683,7 @@ radius = 112.0
 
 [node name="BushGuardian" type="CharacterBody2D"]
 script = ExtResource("1_ocgds")
-attack_cd = 1.7
+attack_cd = 1.0
 enemy_type = 1
 entity_type = 1
 stun_parry_needed = 3
@@ -730,7 +730,6 @@ position = Vector2(-27, 16)
 target_position = Vector2(0, 20)
 
 [node name="SightOfView" type="Area2D" parent="."]
-visible = false
 collision_layer = 3
 collision_mask = 3
 
@@ -746,7 +745,6 @@ target_position = Vector2(251, 0)
 collision_mask = 3
 
 [node name="AttackRanges" type="Node2D" parent="."]
-visible = false
 position = Vector2(5, -24)
 
 [node name="MeleeRange" type="Area2D" parent="AttackRanges"]
