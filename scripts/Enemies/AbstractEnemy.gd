@@ -4,7 +4,7 @@ class_name AbstractEnemy
 # Enumerazione che definisce il tipo di nemico
 enum EnemyType {
 	DUMMY,
-	SOMEHTING 
+	BUSH_GUARDIAN 
 }
 
 # Stato interno del nemico
@@ -13,6 +13,9 @@ enum EnemyState {
 	PATROLLING,
 	MOVING_TOWARD_PLAYER,
 	ATTACKING,
+	PARRIED,
+	STUNNED,
+	ROTATING,
 	DYING
 }
 
@@ -31,6 +34,7 @@ var player : Player = null
 # Variabili booleane per conservare stati interni miniori
 var can_move : bool = false
 var can_attack : bool = false
+var player_in_range : bool = false
 
 
 # Reference ai raycast per il movimento
@@ -63,6 +67,7 @@ func _process(_delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	apply_gravity(delta)
 	move()
+	update_vision_raycast()
 
 
 # La funzione react gestisce le interazioni con il player e l'ambiente
@@ -131,19 +136,29 @@ func patrolling():
 	# Scelta della direzione in base al raycasting
 	if direction == Direction.RIGHT:
 		if can_walk_right():
+			# Applicazione del vettore velocità
 			velocity.x = SPEED
+			# Funzione che muove il corpo della entity
+			move_and_slide()
 		else:
+			print("Rotating to left")
+			velocity.x = 0
 			direction = Direction.LEFT
+			can_move = false
+			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
+	
 	elif direction == Direction.LEFT:
 		if can_walk_left():
+			# Applicazione del vettore velocità
 			velocity.x = -SPEED
+			# Funzione che muove il corpo della entity
+			move_and_slide()
 		else:
+			print("Rotating to right")
+			velocity.x = 0
 			direction = Direction.RIGHT
-	
-	# Applicazione del vettore velocità
-	velocity.x = SPEED * direction
-	# Funzione che muove il corpo della entity
-	move_and_slide()
+			can_move = false
+			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
 
 
 # Quando questa funzione viene chiamata viene sottratto un parry necessario allo stunn
@@ -167,21 +182,6 @@ func get_stunned():
 	reset_needed_parry_number() # Questa funzione sta qua per testing
 
 
-# Funzione che cambia lo stato interno
-func update_state(new_state : EnemyState):
-	state = new_state
-	print("Status changed to ", state)
-
-
-# Banale funzione per applicare la gravità
-func apply_gravity(delta):
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-		move_and_slide()
-	else:
-		can_move = true
-
-
 # Funzione handler del segnale di quando il player entra nel campo visivo
 func _on_body_entered(body : Node2D):
 	
@@ -190,17 +190,40 @@ func _on_body_entered(body : Node2D):
 	if body.is_in_group("player"):
 		print("Player Found")
 		player = body as Player
-		# Ottenuta la reference facciamo puntare il raycast verso la posizione del player
-		point_raycast_to_player()
-		
-		if is_player_visible():
-			if state != EnemyState.MOVING_TOWARD_PLAYER:
-				update_state(EnemyState.MOVING_TOWARD_PLAYER)
-				print("Moving to player")
-			else:
-				if state == EnemyState.MOVING_TOWARD_PLAYER:
-					update_state(EnemyState.PATROLLING)
-					print("Back to patrolling")
+		player_in_range = true
+
+
+# Funzine handler di quando il player esce dal campo visivo
+func _on_body_exited(body : Node2D):
+	if body == player:
+		print("Player uscito dal range di aggro")
+		player = null
+		player_in_range = false
+		can_move = true
+		update_state(EnemyState.PATROLLING)
+
+
+func folow_player():
+	# Ottenuta la reference facciamo puntare il raycast verso la posizione del player
+	if player == null:
+		return
+	
+	point_raycast_to_player()
+	
+	if is_player_visible():
+		if state != EnemyState.MOVING_TOWARD_PLAYER:
+			update_state(EnemyState.MOVING_TOWARD_PLAYER)
+			print("Moving to player")
+	else:
+		if state == EnemyState.MOVING_TOWARD_PLAYER:
+			update_state(EnemyState.PATROLLING)
+			print("Back to patrolling")
+
+
+
+func update_vision_raycast():
+	if player_in_range:
+		folow_player()
 
 
 # Questa funzione aggiorna la posizione del raycast per 
@@ -231,25 +254,14 @@ func is_player_visible() -> bool:
 	return hit == player
 
 
-# Funzine handler di quando il player esce dal campo visivo
-func _on_body_exited(body : Node2D):
-	if body == player:
-		player = null
-		update_state(EnemyState.PATROLLING)
-
-
 # Questa funzione ritorna true se il nemico può camminare a destra, altrimenti ritorna false
 func can_walk_right() -> bool:
-	if right_floor_ray_cast.is_colliding() and not right_wall_ray_cast.is_colliding():
-		return true
-	return false
+	return right_floor_ray_cast.is_colliding() and not right_wall_ray_cast.is_colliding()
 
 
 # Questa funzione ritorna true se il nemico può camminare a destra, altrimenti ritorna false
 func can_walk_left() -> bool:
-	if left_floor_ray_cast.is_colliding() and not left_wall_ray_cast.is_colliding():
-		return true
-	return false
+	return left_floor_ray_cast.is_colliding() and not left_wall_ray_cast.is_colliding()
 
 
 # Funzione che gestisce la logica di danno
@@ -260,16 +272,27 @@ func take_damage(value : int):
 		return
 	
 	if health - value <= 0:
+		# L'entità viene resa invulnerabile per darle il tempo di morire
+		# Anche per evitare dei possibili bug
+		make_invulnerable()
 		print("Enemy "+ str(enemy_type) + " dieing.")
 		update_state(EnemyState.DYING)
 		# Viene anche impostata la flag per l'attacco a false per impedire bug
 		can_attack = false
-		# L'entità viene anche resa invulnerabile per darle il tempo di morire
-		# Anche per evitare dei possibili bug
-		make_invulnerable()
+		can_move = false
+	
 	else:
 		health -= value
 		print("Enemy "+ str(enemy_type) + " got damaged with " + str(value) + " damage. Current health: " + str(health))
+
+
+# Banale funzione per applicare la gravità
+func apply_gravity(delta):
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+		move_and_slide()
+	else:
+		can_move = true
 
 
 # La funzione che gestisce la morte della entità
@@ -281,9 +304,19 @@ func die():
 	queue_free()
 
 
+# Funzione che cambia lo stato interno
+func update_state(new_state : EnemyState):
+	state = new_state
+
+
 func get_knockbacked():
 	print("Enemy got knockbacked.")
 
 
 func reset_needed_parry_number():
 	stun_parry_needed = parry_number
+
+
+# Funzione da implementare nelle classi figlie per permettere di fare le animazioni
+func do_animation():
+	pass

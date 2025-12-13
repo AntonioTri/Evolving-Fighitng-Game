@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7u60d7pyp7pe"
-path="res://.godot/imported/Enemy.png-2363eeb69cd4deab9003ffbd03443d60.ctex"
+uid="uid://cjt28468gstc7"
+path="res://.godot/imported/roots_walking_tree-Sheet.png-675351afd097ef03d312870bba210455.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/Enemies/Enemy.png"
-dest_files=["res://.godot/imported/Enemy.png-2363eeb69cd4deab9003ffbd03443d60.ctex"]
+source_file="res://textures/Enemies/roots_walking_tree-Sheet.png"
+dest_files=["res://.godot/imported/roots_walking_tree-Sheet.png-675351afd097ef03d312870bba210455.ctex"]
 
 [params]
 

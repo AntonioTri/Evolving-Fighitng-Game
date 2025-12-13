@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cdofpsqi7asw4" path="res://scripts/CollisionBoxSystem/HitBox.tscn" id="3_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://hxodfbwi7sn4" path="res://scripts/CollisionBoxSystem/ParryBox.tscn" id="4_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://d1m7x0feb7cba" path="res://scripts/CollisionBoxSystem/HurtBox.tscn" id="5_iywne"]
-[ext_resource type="PackedScene" uid="uid://c3lken4ggiqp4" path="res://scripts/Enemies/AbstractEnemy.tscn" id="6_p57ef"]
+[ext_resource type="PackedScene" uid="uid://b8jvxjv0xe3ev" path="res://scripts/Enemies/BushGuardian/BushGuardian.tscn" id="6_p57ef"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uwrxv"]
 texture = ExtResource("1_yqjtg")
@@ -189,6 +189,5 @@ position = Vector2(-80, 231)
 position = Vector2(-242, 222)
 box_type = 1
 
-[node name="CableEnemy" parent="." instance=ExtResource("6_p57ef")]
-position = Vector2(1049, 231)
-SPEED = 100.0
+[node name="BushGuardian" parent="." instance=ExtResource("6_p57ef")]
+position = Vector2(1000, 215)
