@@ -9,6 +9,7 @@ enum EnemyType {
 
 # Stato interno del nemico
 enum EnemyState {
+	SPWANING,
 	IDLE,
 	PATROLLING,
 	MOVING_TOWARD_PLAYER,
@@ -23,6 +24,8 @@ enum EnemyState {
 @export var enemy_type : EnemyType
 # Il valore dello scudo del nemico
 @export var shield_amount : int = 0
+# Il range di idleing verso il player
+@export var idleing_range : float = 50.0
 # Il numero di parry iniziali, serve a resettare il numero di quelli necessari dopo un critico
 var parry_number : int
 # Il valore che identifica la direzione
@@ -54,20 +57,20 @@ func _ready() -> void:
 	# Viene settata al direzione di patrolling iniziale in modo randomico
 	direction = Direction.RIGHT if randi_range(0, 1) == 1 else Direction.LEFT
 	# Impostazione dello stato su IDLE
-	state = EnemyState.IDLE
+	state = EnemyState.SPWANING
 	# Connessione dei segnali per gestire il campo visivo
 	aggro_range.body_entered.connect(_on_body_entered)
 	aggro_range.body_exited.connect(_on_body_exited)
 
 
-func _process(_delta: float) -> void:
-	react()
+func _process(delta: float) -> void:
+	react(delta)
 
 
 func _physics_process(delta: float) -> void:
 	
 	apply_gravity(delta)
-	print("Can move: " + str(can_move))
+
 	if not can_move: # La funzione ritorna e blocca il movimento se non è permesso 
 		return
 	
@@ -77,12 +80,12 @@ func _physics_process(delta: float) -> void:
 
 # La funzione react gestisce le interazioni con il player e l'ambiente
 # Calcolato normalmente, separato dai calcoli della fisica
-func react():
+func react(delta: float):
 	
 	match state:
 		EnemyState.ATTACKING:
 			if can_attack:
-				attack()
+				attack(delta)
 		EnemyState.DYING:
 			die()
 
@@ -90,8 +93,10 @@ func react():
 # La logica del patrolling, che definisce il movimento, l'allert
 # Calcolato nella fisica degli oggetti
 func move():
-	print("Moving state: " + str(state))
+
 	match state:
+		EnemyState.SPWANING:
+			spawning()
 		EnemyState.IDLE:
 			idleing()
 		EnemyState.PATROLLING:
@@ -100,13 +105,17 @@ func move():
 			moving_toward_player()
 
 
+func spawning():
+	# Utilizzo generale che attende che il nemico sia sul terreno
+	if is_on_floor():
+		allow_movement()
+		update_state(EnemyState.PATROLLING)
+
 # Questi metodi vengono lasciati vuoti per permettere ad ogni tipologia di nemico
 # di implementarle a piacimento
 func idleing():
-	# Utilizzo generale che attende che il nemico sia sul terreno
-	if is_on_floor():
-		can_move = true
-		update_state(EnemyState.PATROLLING)
+	pass
+	
 
 
 # L'unica implementata è quella di patrolling che generalmente funziona uguale per tutti i nemici
@@ -123,7 +132,7 @@ func patrolling():
 			print("Rotating to left")
 			velocity.x = 0
 			direction = Direction.LEFT
-			can_move = false
+			block_movement()
 			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
 	
 	elif direction == Direction.LEFT:
@@ -136,27 +145,8 @@ func patrolling():
 			print("Rotating to right")
 			velocity.x = 0
 			direction = Direction.RIGHT
-			can_move = false
+			block_movement()
 			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
-
-
-# Questa funzione cambia la direzione del movimento i base alla direzione del player
-func moving_toward_player():
-	
-	if player == null:
-		return
-
-	# Calcolo della direzione verso il player
-	if player.global_position.x > global_position.x:
-		direction = Direction.RIGHT
-		sprite.flip_h = false
-	else:
-		direction = Direction.LEFT
-		sprite.flip_h = true
-
-	# Movimento verso il player
-	velocity.x = SPEED * direction
-	move_and_slide()
 
 
 # Funzione handler del segnale di quando il player entra nel campo visivo
@@ -174,7 +164,7 @@ func _on_body_exited(body : Node2D):
 		print("Player uscito dal range di aggro")
 		player = null
 		player_in_range = false
-		can_move = true
+		allow_movement()
 		update_state(EnemyState.PATROLLING)
 
 
@@ -189,6 +179,13 @@ func follow_player():
 	# Ottenuta la reference facciamo puntare il raycast verso la posizione del player
 	if player == null:
 		return
+
+	# NON interferire con stati critici
+	if state == EnemyState.ATTACKING \
+	or state == EnemyState.STUNNED \
+	or state == EnemyState.PARRIED \
+	or state == EnemyState.DYING:
+		return
 	
 	point_raycast_to_player()
 	
@@ -200,6 +197,39 @@ func follow_player():
 		if state == EnemyState.MOVING_TOWARD_PLAYER:
 			update_state(EnemyState.PATROLLING)
 			print("Back to patrolling")
+
+
+# Questa funzione cambia la direzione del movimento i base alla direzione del player
+func moving_toward_player():
+	
+	if player == null:
+		return
+
+	# Controllo se il player è entro il range di idleing e non attaccabile	
+	if is_player_near() and not is_player_attackable():
+		print("Player near but no attack ready, idleing.")
+		idleing()
+	
+	elif is_player_attackable():
+		print("Player near and attackable, attacking!")
+		attack_behavior()
+	
+	else :
+
+		print("Doing walk animation")
+		do_walk_animation()
+
+		# Calcolo della direzione verso il player
+		if player.global_position.x > global_position.x:
+			direction = Direction.RIGHT
+			sprite.flip_h = false
+		else:
+			direction = Direction.LEFT
+			sprite.flip_h = true
+
+		# Movimento verso il player
+		velocity.x = SPEED * direction
+		move_and_slide()
 
 
 # Questa funzione aggiorna la posizione del raycast per 
@@ -228,10 +258,6 @@ func is_player_visible() -> bool:
 	
 	var hit := vision_ray_cast.get_collider()
 	return hit == player
-
-
-func attack():
-	print("Enemy attacking!")
 
 
 # Quando questa funzione viene chiamata viene sottratto un parry necessario allo stunn
@@ -270,8 +296,8 @@ func take_damage(value : int):
 		# Anche per evitare dei possibili bug
 		make_invulnerable()
 		# Viene anche impostata la flag per l'attacco a false per impedire bug
-		can_attack = false
-		can_move = false
+		block_attack()
+		block_movement()
 		print("Enemy "+ str(enemy_type) + " dieing.")
 		update_state(EnemyState.DYING)
 	
@@ -286,7 +312,7 @@ func apply_gravity(delta):
 		velocity += get_gravity() * delta
 		move_and_slide()
 	elif state != EnemyState.DYING:
-		can_move = true
+		allow_movement()
 
 
 # La funzione che gestisce la morte della entità
@@ -333,11 +359,40 @@ func flash_white(duration := 0.1):
 		duration
 	)
 
+# Questa funzione ritorna true se il player è entro il range designato
+# Dovrebbe essere eseguita esclusivamente se il cooldown di attacco non è ancora finito
+func is_player_near():
+	if player == null:
+		return false
+	
+	var distance := global_position.distance_to(player.global_position)
+	return distance <= idleing_range
+
 
 func reset_needed_parry_number():
 	stun_parry_needed = parry_number
 
+func attack(_delta: float):
+	print("Enemy attacking!")
 
 # Funzione da implementare nelle classi figlie per permettere di fare le animazioni
-func do_animation():
+func is_player_attackable():
 	pass
+
+func do_walk_animation():
+	pass
+
+func attack_behavior():
+	pass
+
+func allow_movement():
+	can_move = true
+
+func block_movement():
+	can_move = false
+
+func allow_attack():
+	can_attack = true
+
+func block_attack():
+	can_attack = false

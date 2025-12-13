@@ -29,7 +29,7 @@ func _on_area_entered(box: Area2D) -> void:
 	var cbox := box as CollisionBox
 
 	if self.box_type == BoxType.HURTBOX and cbox.box_type == BoxType.ATTACKBOX:
-		hurt_owner(cbox.damage)
+		hurt_owner(cbox.owner_entity, cbox.damage)
 	elif self.box_type == BoxType.PARRY and cbox.box_type == BoxType.ATTACKBOX:
 		parry_entity(cbox.owner_entity)
 	else:
@@ -37,7 +37,13 @@ func _on_area_entered(box: Area2D) -> void:
 
 
 # Handler per far prendere danno al proprietario della HurtBox
-func hurt_owner(damage_to_gain : int):
+func hurt_owner(entity : AbstractEntity, damage_to_gain : int):
+	
+	# Rimozione del fuoco amico tra i nemici
+	if entity is AbstractEnemy:
+		var enemy = entity as AbstractEnemy
+		if enemy == owner_entity:
+			return	
 	
 	# Frame Freeze
 	if damage_to_gain > 10:
