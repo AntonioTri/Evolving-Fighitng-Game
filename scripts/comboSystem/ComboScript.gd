@@ -13,7 +13,7 @@ var in_recovery := false
 
 # La funzione update controlla gli input direzionali per girare le hitbox nella direzione giusta
 func update():
-	self.scale.x = -1 if player.inputs.direction < 0 else 1
+	self.scale.x = -1 if player.last_direction < 0 else 1
 
 # Con la funzione start_combo si inizia una nuova combo o si tenta di concatenare un attacco
 func start_combo():
@@ -80,3 +80,14 @@ func enqueue_next_attack():
 
 func allow_player_movement():
 	player.states.allow_movement()
+
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	
+	if current_attack == null:
+		return
+
+	match anim_name:
+		current_attack.animation_name:
+			allow_player_movement()
+			_reset_combo_state()

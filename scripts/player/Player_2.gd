@@ -9,6 +9,8 @@ class_name Player
 @onready var player_abilities: Abilities = $PlayerAbilities
 @onready var states: StateManager = $StateManager
 
+# Variabile che conserva l'ultima direzione orizzontale del player
+var last_direction := Direction.STILL
 
 func _ready() -> void:
 	disable_collision_boxes()

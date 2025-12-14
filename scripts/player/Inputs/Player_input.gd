@@ -16,3 +16,7 @@ func update():
 	jump_pressed = Input.is_action_just_pressed("jump") and player.is_on_floor()
 	run_pressed = Input.is_action_pressed("run")
 	dash_pressed = Input.is_action_just_pressed("dash")
+
+	# Aggiorna l'ultima direzione orizzontale del player
+	if direction != Direction.STILL:
+		player.last_direction = direction

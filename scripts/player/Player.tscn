@@ -21,8 +21,8 @@ shader = ExtResource("2_k8y5b")
 shader_parameter/flash_strength = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_70d11"]
-radius = 27.0
-height = 98.0
+radius = 56.008926
+height = 112.01785
 
 [sub_resource type="Animation" id="Animation_wr50v"]
 length = 0.001
@@ -418,7 +418,7 @@ tracks/10/path = NodePath("PlayerCombat")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0.33333334, 0.6, 1),
+"times": PackedFloat32Array(0.33333334, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1),
 "values": [{
 "args": [],
@@ -563,7 +563,7 @@ tracks/10/path = NodePath("PlayerCombat")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0.16666667, 0.43333334, 0.73333335),
+"times": PackedFloat32Array(0.16666667, 0.53333336, 0.73333335),
 "transitions": PackedFloat32Array(1, 1, 1),
 "values": [{
 "args": [],
@@ -832,3 +832,5 @@ script = ExtResource("11_rnnxu")
 
 [node name="StateManager" type="Node" parent="."]
 script = ExtResource("11_su0ha")
+
+[connection signal="animation_finished" from="PlayerVisuals/AnimationPlayer" to="PlayerCombat" method="_on_animation_player_animation_finished"]
