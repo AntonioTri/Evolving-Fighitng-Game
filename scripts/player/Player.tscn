@@ -1,6 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://c3m00etamojrd"]
+[gd_scene load_steps=21 format=3 uid="uid://c3m00etamojrd"]
 
 [ext_resource type="Script" uid="uid://c457k8nwyie4t" path="res://scripts/player/Player.gd" id="1_safxn"]
+[ext_resource type="Shader" uid="uid://c6l4nik8csequ" path="res://scripts/utils/hit_flash.gdshader" id="2_k8y5b"]
 [ext_resource type="Texture2D" uid="uid://b86jxhrx5u3ci" path="res://textures/Player/SomeoneAnimations.png" id="2_wr50v"]
 [ext_resource type="Script" uid="uid://dcqr3xhn26ek0" path="res://scripts/comboSystem/ComboScript.gd" id="3_mdl7e"]
 [ext_resource type="Resource" uid="uid://bmb83b6kkdc57" path="res://scripts/player/comboSystem/meleeCombo/Attack_1.tres" id="4_qu4a1"]
@@ -9,6 +10,10 @@
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_s8145"]
 radius = 7.0
 height = 40.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hd152"]
+shader = ExtResource("2_k8y5b")
+shader_parameter/flash_strength = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_70d11"]
 radius = 27.0
@@ -789,6 +794,7 @@ size = Vector2(16, 31)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
+collision_mask = 9
 script = ExtResource("1_safxn")
 RUNNING_MULTIPLAYER = 2.515
 stun_parry_needed = 1
@@ -803,6 +809,7 @@ position = Vector2(0, -20)
 shape = SubResource("CapsuleShape2D_s8145")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_hd152")
 position = Vector2(0, -48)
 texture = ExtResource("2_wr50v")
 hframes = 14
@@ -821,7 +828,7 @@ speed_scale = 0.9
 
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(0, -40)
-zoom = Vector2(2, 2)
+zoom = Vector2(1.65, 1.65)
 
 [node name="CombatRoot" type="Node2D" parent="."]
 

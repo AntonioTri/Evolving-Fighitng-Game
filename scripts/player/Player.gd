@@ -17,7 +17,9 @@ class_name Player
 
 # Variabili booleane per gestire gli stati interni
 var direction : int = Direction.STILL
+var stunned : bool
 var can_move : bool = true
+var can_attack : bool = true
 var walking : bool = false
 var running : bool = false
 # Variabili per la corsa dopo un secondo
@@ -31,11 +33,19 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+
+	# Viene impedito ogni tipo di interazione se il player è stunanto
+	if stunned:
+		return
+	
 	handle_running(delta)
 
 
 func _physics_process(delta: float) -> void:
-	
+
+	# Viene impedito ogni tipo di interazione fisica se il player è stunanto
+	if stunned:
+		return
 	# Se non è attualmente concesso il movimento la funzione ritorna ed ignora tutto
 	if not can_move:
 		return
@@ -117,6 +127,9 @@ func start_running():
 # Gestion degli attacchi tramite il combo manager, viene solo segnalato l'avvenuto input
 # Il sistema polimorfico ed astratto gestisce le combo da solo
 func _input(event):
+
+	if can_attack:
+		pass
 	
 	if event.is_action_pressed("attack"):
 		attack_manager.start_combo()
@@ -134,16 +147,19 @@ func disable_collision_boxes():
 func get_parried():
 	print("Player parried")
 
-
 # Funzione che attiva la possibilità di muoversi
 func allow_movement():
 	can_move = true
-
 
 # Funzione che blocca la possibilità di muoversi
 func block_movement():
 	can_move = false
 
+func get_stunned():
+	stunned = true
+
+func remove_stun():
+	stunned = false
 
 func set_attacking(flag : bool):
 	is_attacking = flag

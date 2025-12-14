@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://fgr4k5las8am" path="res://scripts/Enemies/AbstractEnemy.gd" id="1_5x1c5"]
 [ext_resource type="Shader" uid="uid://c6l4nik8csequ" path="res://scripts/utils/hit_flash.gdshader" id="2_2kg87"]
-[ext_resource type="Texture2D" uid="uid://7u60d7pyp7pe" path="res://textures/Enemies/BushGuardian/Enemy.png" id="2_hp5u7"]
+[ext_resource type="Texture2D" uid="uid://7u60d7pyp7pe" path="res://textures/Enemies/Enemy.png" id="2_hp5u7"]
 [ext_resource type="PackedScene" uid="uid://cdofpsqi7asw4" path="res://scripts/CollisionBoxSystem/AttackBox.tscn" id="3_godhf"]
 [ext_resource type="PackedScene" uid="uid://d1m7x0feb7cba" path="res://scripts/CollisionBoxSystem/HurtBox.tscn" id="4_2kg87"]
 [ext_resource type="PackedScene" uid="uid://hxodfbwi7sn4" path="res://scripts/CollisionBoxSystem/ParryBox.tscn" id="5_u67ka"]

@@ -4,3 +4,9 @@ res://scripts/Enemies/BushGuardian/BushGuardian.tscn
 res://scripts/utils/hit_flash.gdshader
 res://scripts/comboSystem/ComboScript.gd
 res://scripts/player/Player.tscn
+res://scripts/SpawnableAttacks/PullingRoots.tscn
+res://scripts/SpawnableAttacks/SpawnableAttack.gd
+res://scripts/SpawnableAttacks/PullingRoot.gd
+res://scripts/EntitySystem/AbstractEntity.gd
+res://scripts/player/Player.gd
+res://scripts/Enemies/AbstractEnemy.tscn
