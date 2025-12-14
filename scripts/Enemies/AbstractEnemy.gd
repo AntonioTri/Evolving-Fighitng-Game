@@ -52,6 +52,7 @@ var status_pre_rotate : EnemyState
 @onready var right_floor_ray_cast: RayCast2D = $RaycastingMovement/RightFloorRayCast
 @onready var left_floor_ray_cast: RayCast2D = $RaycastingMovement/LeftFloorRayCast
 @onready var vision_ray_cast: RayCast2D = $SightOfView/RayCast2D
+@onready var collision_boxes_root: Node2D = $CollisionBoxes
 @onready var aggro_range: Area2D = $SightOfView
 @onready var sprite: Sprite2D = $Sprite2D
 
@@ -63,6 +64,7 @@ func _ready() -> void:
 	# Viene settata al direzione di patrolling iniziale in modo randomico
 	direction = Direction.RIGHT if randi_range(0, 1) == 1 else Direction.LEFT
 	sprite.flip_h = true if direction == Direction.LEFT else false
+	collision_boxes_root.scale.x = -1 if direction < 0 else 1
 	# Impostazione dello stato su IDLE
 	state = EnemyState.SPWANING
 	# Connessione dei segnali per gestire il campo visivo
@@ -90,6 +92,7 @@ func check_if_should_flip_h():
 			sprite.flip_h = false
 		elif direction == Direction.LEFT:
 			sprite.flip_h = true
+		collision_boxes_root.scale.x = -1 if direction < 0 else 1
 
 
 # La funzione react gestisce le interazioni con il player e l'ambiente
@@ -323,7 +326,7 @@ func take_damage(value : int):
 		return
 	
 	# Hit flashper feedback
-	flash_white(0.2)
+	flash_white(0.1)
 	
 	if health - value <= 0:
 		# L'entità viene resa invulnerabile per darle il tempo di morire
@@ -385,22 +388,6 @@ func update_state(new_state: EnemyState):
 
 func get_knockbacked():
 	print("Enemy got knockbacked.")
-
-# Hit flash per qunado un nemico viene colpito
-func flash_white(duration := 0.1):
-	var mat := sprite.material as ShaderMaterial
-	if mat == null:
-		return
-
-	mat.set_shader_parameter("flash_strength", 1.0)
-
-	var tween := get_tree().create_tween()
-	tween.tween_property(
-		mat,
-		"shader_parameter/flash_strength",
-		0.0,
-		duration
-	)
 
 # Questa funzione ritorna true se il player è entro il range designato
 # Dovrebbe essere eseguita esclusivamente se il cooldown di attacco non è ancora finito
