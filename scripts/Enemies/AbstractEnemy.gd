@@ -73,6 +73,8 @@ func _process(_delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	
+	check_if_should_flip_h()
+
 	apply_gravity(delta)
 	
 	move()
@@ -85,7 +87,6 @@ func check_if_should_flip_h():
 			sprite.flip_h = false
 		elif direction == Direction.LEFT:
 			sprite.flip_h = true
-		print("sprite_h flipped: ", sprite.flip_h)
 
 
 # La funzione react gestisce le interazioni con il player e l'ambiente
@@ -135,6 +136,8 @@ func idleing():
 # L'unica implementata è quella di patrolling che generalmente funziona uguale per tutti i nemici
 func patrolling():
 
+	do_walk_animation()
+
 	# Se il player è in range di visione viene updatato lo stato e la funzine ritorna
 	if player_in_range:
 		# Viene aggiornata la posizione del raycasting di visione
@@ -183,9 +186,6 @@ func chaising():
 	
 	if player == null or is_in_critical_state():
 		return
-	
-	# Questo deve stare qui, non so bene il motivo ma se non sta qui si bugga tutto
-	check_if_should_flip_h()
 
 	# Se invece è visibile si controlla che il nemicolo stia guardando
 	if not is_enemy_facing_player():
@@ -206,11 +206,9 @@ func chaising():
 
 	# Controllo se il player è entro il range di idleing e non attaccabile	
 	if is_player_near() and not is_player_attackable():
-		print("Player near but no attack ready, idleing.")
 		idleing()
 	
 	elif is_player_attackable():
-		print("Player near and attackable, attacking!")
 		attack_behavior()
 	
 	else :
@@ -291,6 +289,7 @@ func _on_body_exited(body : Node2D):
 		player_in_range = false
 		allow_movement()
 		update_state(EnemyState.PATROLLING)
+
 
 # Quando questa funzione viene chiamata viene sottratto un parry necessario allo stunn
 # se siamo a 0 il nemico viene stunnato

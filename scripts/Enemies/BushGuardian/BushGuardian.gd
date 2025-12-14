@@ -11,6 +11,8 @@ class_name BushGuardian
 var attack_timer : float = 0.0
 var attack_step := 0
 var combo_requested := false
+# Variabili per il chaising behavior
+@export var chaising_speed : float = SPEED
 
 
 
@@ -69,48 +71,6 @@ func die():
 func do_rotation():
 	if animator.current_animation != "rotate":
 		animator.play("rotate")
-
-
-# L'unica implementata è quella di patrolling che generalmente funziona uguale per tutti i nemici
-func patrolling():
-
-	if animator.current_animation != "walk":
-		check_if_should_flip_h()
-		animator.play("walk")
-
-	# Se il player è in range di visione viene updatato lo stato e la funzine ritorna
-	if player_in_range:
-		# Viene aggiornata la posizione del raycasting di visione
-		point_raycast_to_player()
-		# Se il player non è visibile si cambia stato e si torna al patrolling
-		if is_player_visible():
-			print("Player visible, changing status to chaising")
-			update_state(EnemyState.CHAISING)
-			return
-
-
-	# Scelta della direzione in base al raycasting
-	if direction == Direction.RIGHT:
-		if can_walk_right():
-			# Applicazione del vettore velocità
-			velocity.x = SPEED
-			# Funzione che muove il corpo della entity
-			move_and_slide()
-		else:
-			print("Rotating to left")
-			direction = Direction.LEFT
-			patrolling_rotation()
-	
-	elif direction == Direction.LEFT:
-		if can_walk_left():
-			# Applicazione del vettore velocità
-			velocity.x = -SPEED
-			# Funzione che muove il corpo della entity
-			move_and_slide()
-		else:
-			print("Rotating to right")
-			direction = Direction.RIGHT
-			patrolling_rotation()
 
 
 # La funzione di attacco del Bush Guardian
@@ -204,7 +164,6 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 		"rotate": # Quando ha finito di ruotare il movimento e l'attacco gli vengono ridati
 			print("Rotation finished")
 			should_flip_h = true # Viene segnalato alla fine dell'animazine che lo sprite dovrebbe ruotare
-
 			update_state(status_pre_rotate)
 			# In base alla direzione viene ruotato lo sprite alla fine della animazione
 			allow_attack()
