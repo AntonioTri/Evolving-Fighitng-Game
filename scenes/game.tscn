@@ -176,8 +176,6 @@ tile_set = SubResource("TileSet_yqjtg")
 
 [node name="Player" parent="." instance=ExtResource("2_yqjtg")]
 position = Vector2(278, 295)
-JUMP_VELOCITY = -350.0
-SPEED = 90.0
 
 [node name="Dummy" parent="." instance=ExtResource("3_lnu2h")]
 position = Vector2(80, 231)
@@ -190,4 +188,4 @@ position = Vector2(-242, 222)
 box_type = 1
 
 [node name="BushGuardian" parent="." instance=ExtResource("6_p57ef")]
-position = Vector2(628, 297)
+position = Vector2(941, 243)

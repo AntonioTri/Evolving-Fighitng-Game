@@ -1,7 +1,8 @@
 [gd_resource type="Resource" script_class="ComboAttack" load_steps=3 format=3 uid="uid://jg7soauxcuxd"]
 
 [ext_resource type="Script" uid="uid://b6leb55we2s6s" path="res://scripts/comboSystem/ComboAttack.gd" id="1_i5177"]
-[ext_resource type="Resource" uid="uid://4vnjh1a4gx2e" path="res://scripts/player/comboSystem/meleeCombo/Attack_3.tres" id="1_t662x"]
+[ext_resource type="Resource" uid="uid://4vnjh1a4gx2e" path="res://scripts/player/Comboes/meleeCombo/Attack_3.tres" id="1_t662x"]
+
 
 [resource]
 script = ExtResource("1_i5177")

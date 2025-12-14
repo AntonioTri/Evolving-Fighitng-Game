@@ -19,7 +19,6 @@ enum EntityType {
 @export var health : int = 5
 
 # Variabili booleane per conservare gli stati interni e gestire le logiche
-var is_attacking : bool = false
 var invulnerability : bool = false
 
 
@@ -47,24 +46,6 @@ func take_damage(value : int):
 	else:
 		health -= value
 		print("Entity "+ str(entity_type) + " got damaged with " + str(value) + " damage. Current health: " + str(health))
-
-
-# Hit flash per qunado un nemico viene colpito
-func flash_white(duration := 0.1):
-	
-	var mat := $Sprite2D.material as ShaderMaterial
-	if mat == null:
-		return
-
-	mat.set_shader_parameter("flash_strength", 1.0)
-
-	var tween := get_tree().create_tween()
-	tween.tween_property(
-		mat,
-		"shader_parameter/flash_strength",
-		0.0,
-		duration
-	)
 
 
 # Funzione che gestisce lo stunn

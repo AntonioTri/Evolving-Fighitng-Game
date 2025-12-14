@@ -399,6 +399,25 @@ func is_player_near():
 	return distance <= idleing_range
 
 
+# Hit flash per qunado un nemico viene colpito
+func flash_white(duration := 0.1):
+	
+	var mat := $Sprite2D.material as ShaderMaterial
+	if mat == null:
+		return
+
+	mat.set_shader_parameter("flash_strength", 1.0)
+
+	var tween := get_tree().create_tween()
+	tween.tween_property(
+		mat,
+		"shader_parameter/flash_strength",
+		0.0,
+		duration
+	)
+
+
+
 func reset_needed_parry_number():
 	stun_parry_needed = parry_number
 

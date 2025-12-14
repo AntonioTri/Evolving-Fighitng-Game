@@ -13,10 +13,10 @@ func affect_player(player: Player):
 	var duration := 0.35        # tempo del pull
 
 	# Stunniamo il player per impedire movimenti ed interazioni
-	player.get_stunned()
+	player.states.apply_stun()
 
 	# Flashamo il player
-	player.flash_white(0.1)
+	#player.flash_white(0.1)
 
 	var t := 0.0
 	while t < 1.0:
@@ -34,4 +34,4 @@ func affect_player(player: Player):
 		await get_tree().process_frame
 
 	# Riconsegniamo al player la libertà di movimento
-	player.remove_stun()
+	player.states.remove_stun()

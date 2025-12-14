@@ -1,6 +1,6 @@
 extends AbstractEntity
 
-class_name Player
+class_name Player_
 
 # Variabili per settare la potenza di alcune azioni
 @export var RUNNING_MULTIPLAYER = 1.5
@@ -161,5 +161,3 @@ func get_stunned():
 func remove_stun():
 	stunned = false
 
-func set_attacking(flag : bool):
-	is_attacking = flag

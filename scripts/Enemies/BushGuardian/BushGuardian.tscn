@@ -797,7 +797,6 @@ position = Vector2(-27, 16)
 target_position = Vector2(0, 20)
 
 [node name="SightOfView" type="Area2D" parent="."]
-visible = false
 collision_layer = 3
 collision_mask = 3
 
@@ -814,22 +813,19 @@ collision_mask = 3
 
 [node name="AttackRanges" type="Node2D" parent="."]
 visible = false
-position = Vector2(5, -24)
 
 [node name="MeleeRange" type="Area2D" parent="AttackRanges"]
-position = Vector2(-5, 24)
 
 [node name="Shape" type="CollisionShape2D" parent="AttackRanges/MeleeRange"]
-position = Vector2(5, -16)
 shape = SubResource("CircleShape2D_ocgds")
 
 [node name="PullRange" type="Area2D" parent="AttackRanges"]
 
 [node name="Shape" type="CollisionShape2D" parent="AttackRanges/PullRange"]
-position = Vector2(0, 8)
 shape = SubResource("CircleShape2D_o8kih")
 
 [node name="CollisionBoxes" type="Node2D" parent="."]
+visible = false
 position = Vector2(0, -32)
 
 [node name="HurtBox" parent="CollisionBoxes" node_paths=PackedStringArray("owner_entity") instance=ExtResource("3_kwrcs")]

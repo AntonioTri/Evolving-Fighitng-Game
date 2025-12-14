@@ -1,8 +1,9 @@
-extends Node
+extends Node2D
+class_name ComboSystem
 
 @export var first_attack: ComboAttack
 @export var animator : AnimationPlayer = null
-@onready var player: Player = $"../.."
+@onready var player: Player = $".."
 
 var current_attack: ComboAttack = null
 var queued_attack: ComboAttack = null
@@ -10,8 +11,14 @@ var can_chain := false
 var in_recovery := false
 
 
+# La funzione update controlla gli input direzionali per girare le hitbox nella direzione giusta
+func update():
+	self.scale.x = -1 if player.inputs.direction < 0 else 1
+
+# Con la funzione start_combo si inizia una nuova combo o si tenta di concatenare un attacco
 func start_combo():
 
+	# Caso in cui non stiamo attaccando → primo attacco della combo
 	if current_attack == null:
 		make_first_attack()
 		return
@@ -20,11 +27,11 @@ func start_combo():
 	if can_chain and current_attack.next_attack and not in_recovery:
 		enqueue_next_attack()
 
-
+# Funzione per eseguire il primo attacco della combo
 func make_first_attack():
 	_reset_combo_state()
 	# Impediamo al giocatore di muoversi
-	player.block_movement()
+	player.states.block_movement()
 	# Primo colpo
 	current_attack = first_attack
 	play_attack()
@@ -44,7 +51,7 @@ func animation_ended() :
 		return
 
 	_reset_combo_state()
-	player.allow_movement()
+	player.states.allow_movement()
 
 
 func start_recovery():
@@ -72,4 +79,4 @@ func enqueue_next_attack():
 
 
 func allow_player_movement():
-	player.allow_movement()
+	player.states.allow_movement()
