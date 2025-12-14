@@ -1,12 +1,4 @@
-res://scripts/Enemies/BushGuardian/BushGuardian.tscn
 res://scripts/Enemies/AbstractEnemy.gd
 res://scripts/Enemies/BushGuardian/BushGuardian.gd
-res://scripts/Enemies/AbstractEnemy.tscn
-res://scenes/game.tscn
-res://scripts/player/Player.tscn
+res://scripts/Enemies/BushGuardian/BushGuardian.tscn
 res://scripts/utils/hit_flash.gdshader
-res://scripts/CollisionBoxSystem/HitBox.tscn
-res://scripts/CollisionBoxSystem/HurtBox.tscn
-res://scripts/CollisionBoxSystem/ParryBox.tscn
-res://scripts/CollisionBoxSystem/collisionBox.gd
-res://scripts/CollisionBoxSystem/AttackBox.tscn

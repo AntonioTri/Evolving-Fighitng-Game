@@ -30,14 +30,14 @@ func _process(delta: float) -> void:
 
 
 # Funzione overraidata per gestire le interazioni non di natura fisica
-func react(delta: float):
+func react():
 
 	match state:
 		
 		
 		EnemyState.ATTACKING:
 			if can_attack:
-				attack(delta)
+				attack()
 		
 
 		EnemyState.DYING:
@@ -50,10 +50,7 @@ func react(delta: float):
 		
 		EnemyState.STUNNED:
 			animator.play("stunned")
-		
-		
-		EnemyState.ROTATING:
-			change_direction()
+
 
 
 func idleing():
@@ -68,11 +65,8 @@ func die():
 	animator.play("die")
 
 
-
 # Quando il nemico ruota gli viene impedito il movimento e l'attacco
-func change_direction():
-	can_move = false
-	can_attack = false
+func do_rotation():
 	if animator.current_animation != "rotate":
 		animator.play("rotate")
 
@@ -81,8 +75,19 @@ func change_direction():
 func patrolling():
 
 	if animator.current_animation != "walk":
-		sprite.flip_h = ( direction == Direction.LEFT )
+		check_if_should_flip_h()
 		animator.play("walk")
+
+	# Se il player è in range di visione viene updatato lo stato e la funzine ritorna
+	if player_in_range:
+		# Viene aggiornata la posizione del raycasting di visione
+		point_raycast_to_player()
+		# Se il player non è visibile si cambia stato e si torna al patrolling
+		if is_player_visible():
+			print("Player visible, changing status to chaising")
+			update_state(EnemyState.CHAISING)
+			return
+
 
 	# Scelta della direzione in base al raycasting
 	if direction == Direction.RIGHT:
@@ -93,10 +98,8 @@ func patrolling():
 			move_and_slide()
 		else:
 			print("Rotating to left")
-			velocity.x = 0
 			direction = Direction.LEFT
-			block_movement()
-			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
+			patrolling_rotation()
 	
 	elif direction == Direction.LEFT:
 		if can_walk_left():
@@ -106,14 +109,12 @@ func patrolling():
 			move_and_slide()
 		else:
 			print("Rotating to right")
-			velocity.x = 0
 			direction = Direction.RIGHT
-			allow_movement()
-			update_state(EnemyState.ROTATING) # Viene impostato lo stato su rotate
+			patrolling_rotation()
 
 
 # La funzione di attacco del Bush Guardian
-func attack(_delta: float):
+func attack():
 	
 	# Reset del timer di attacco
 	attack_timer = 0
@@ -189,8 +190,6 @@ func try_to_combo():
 		combo_requested = true
 
 
-
-
 # Segnale di fine animazione per gestire i comportamenti legati ad esse
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	
@@ -204,22 +203,23 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 			
 		"rotate": # Quando ha finito di ruotare il movimento e l'attacco gli vengono ridati
 			print("Rotation finished")
-			allow_movement()
-			allow_attack()
+			should_flip_h = true # Viene segnalato alla fine dell'animazine che lo sprite dovrebbe ruotare
+
+			update_state(status_pre_rotate)
 			# In base alla direzione viene ruotato lo sprite alla fine della animazione
-			update_state(EnemyState.PATROLLING)
+			allow_attack()
+			allow_movement()
 		
 		"attack_1":
 			if combo_requested or attack_step == 1:
 				return # recovery cancellata
-
 			allow_movement()
 			block_attack()
-			update_state(EnemyState.MOVING_TOWARD_PLAYER)
+			update_state(EnemyState.CHAISING)
 
 		"attack_2":
 			attack_step = 0
 			combo_requested = false
 			allow_movement()
 			block_attack()
-			update_state(EnemyState.MOVING_TOWARD_PLAYER)
+			update_state(EnemyState.CHAISING)

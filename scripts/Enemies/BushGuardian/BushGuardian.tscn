@@ -730,7 +730,6 @@ position = Vector2(-27, 16)
 target_position = Vector2(0, 20)
 
 [node name="SightOfView" type="Area2D" parent="."]
-visible = false
 collision_layer = 3
 collision_mask = 3
 
@@ -785,6 +784,7 @@ owner_entity = NodePath("../..")
 [node name="CollisionShape2D" parent="CollisionBoxes/AttackBox" index="0"]
 position = Vector2(27, 8)
 rotation = -1.5707964
+shape = SubResource("CapsuleShape2D_kcuq2")
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
 
