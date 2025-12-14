@@ -3,3 +3,4 @@ res://scripts/Enemies/BushGuardian/BushGuardian.gd
 res://scripts/Enemies/BushGuardian/BushGuardian.tscn
 res://scripts/utils/hit_flash.gdshader
 res://scripts/comboSystem/ComboScript.gd
+res://scripts/player/Player.tscn

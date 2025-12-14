@@ -26,6 +26,9 @@ enum EnemyState {
 @export var shield_amount : int = 0
 # Il range di idleing verso il player
 @export var idleing_range : float = 50.0
+# Variabili per il chaising behavior
+@export var CHAISING_SPEED : float = SPEED
+
 # Il numero di parry iniziali, serve a resettare il numero di quelli necessari dopo un critico
 var parry_number : int
 # Il valore che identifica la direzione
@@ -216,7 +219,7 @@ func chaising():
 		do_walk_animation()
 
 		# Movimento verso il player
-		velocity.x = SPEED * direction
+		velocity.x = CHAISING_SPEED * direction
 		move_and_slide()
 
 

@@ -682,9 +682,11 @@ radius = 63.03174
 radius = 112.0
 
 [node name="BushGuardian" type="CharacterBody2D"]
+collision_layer = 4
 script = ExtResource("1_ocgds")
 attack_cd = 1.7
 enemy_type = 1
+CHAISING_SPEED = 80.0
 entity_type = 1
 stun_parry_needed = 3
 SPEED = 50.0

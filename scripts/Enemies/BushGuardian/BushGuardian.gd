@@ -11,8 +11,6 @@ class_name BushGuardian
 var attack_timer : float = 0.0
 var attack_step := 0
 var combo_requested := false
-# Variabili per il chaising behavior
-@export var chaising_speed : float = SPEED
 
 
 

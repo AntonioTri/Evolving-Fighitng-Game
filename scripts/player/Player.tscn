@@ -788,6 +788,7 @@ _data = {
 size = Vector2(16, 31)
 
 [node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_layer = 2
 script = ExtResource("1_safxn")
 RUNNING_MULTIPLAYER = 2.515
 stun_parry_needed = 1
