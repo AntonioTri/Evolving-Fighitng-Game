@@ -27,13 +27,13 @@ func on_physics_process(_delta: float) -> void:
 	if player == null: return
 	
 	# Se il player non è in range di visione lo stato torna a patrolling
-	if not owner_body.can_see_player: 
+	if not owner_enemy.can_see_player: 
 		transition.emit(self, "patrolling")
 		return
 	
 	# Se il nemico non sta guardano il player finisce in stato di rotate
-	if ( owner_body.global_position.x < player.global_position.x and owner_body.direction == -1 ) \
-	or ( owner_body.global_position.x > player.global_position.x and owner_body.direction == 1 ):
+	if ( owner_enemy.global_position.x < player.global_position.x and owner_enemy.direction == -1 ) \
+	or ( owner_enemy.global_position.x > player.global_position.x and owner_enemy.direction == 1 ):
 		transition.emit(self, "rotating")
 		return
 	
@@ -44,7 +44,7 @@ func enter() -> void:
 	player = get_player()
 	animator.play("walk")
 	# Casting referenziato al nemico
-	var body = owner_body.get_type_reference()
+	var body = owner_enemy.get_type_reference()
 	if body is BushGuardian:
 		bush_guardian = body as BushGuardian
 
@@ -74,21 +74,21 @@ func chaise(_delta : float):
 
 	# Se abbiamo saltato le due precedenti condizioni effetuiamo un chaise normale
 	# in quanto il player è lontano, visibile e raggiungibile
-	if owner_body.direction == Direction.RIGHT and can_walk_right():
+	if owner_enemy.direction == Direction.RIGHT and can_walk_right():
 			# Applicazione del vettore velocità
-			owner_body.velocity.x = CHAISING_SPEED
+			owner_enemy.velocity.x = CHAISING_SPEED
 			# Funzione che muove il corpo della entity
-			owner_body.move_and_slide()
+			owner_enemy.move_and_slide()
 			return
 	elif not can_walk_right():
 		animator.play("idle")
 		return
 
-	if owner_body.direction == Direction.LEFT and can_walk_left():
+	if owner_enemy.direction == Direction.LEFT and can_walk_left():
 			# Applicazione del vettore velocità
-			owner_body.velocity.x = -CHAISING_SPEED
+			owner_enemy.velocity.x = -CHAISING_SPEED
 			# Funzione che muove il corpo della entity
-			owner_body.move_and_slide()
+			owner_enemy.move_and_slide()
 			return
 	elif not can_walk_right():
 		animator.play("idle")
@@ -132,4 +132,4 @@ func player_in_range(area : Area2D) -> bool:
 	if collision_shape == null: return false
 	var circle := collision_shape.shape as CircleShape2D
 	if circle == null: return false
-	return owner_body.global_position.distance_to(player.global_position) <= circle.radius
+	return owner_enemy.global_position.distance_to(player.global_position) <= circle.radius

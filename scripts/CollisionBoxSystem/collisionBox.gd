@@ -12,6 +12,7 @@ enum BoxType {
 @export var owner_entity: AbstractEntity
 @export var box_type: BoxType
 @export var damage : int
+var is_perfect_parriable : bool
 
 # La funzione ready collega al segnale area_entered la funzione handler per la collisione
 func _ready() -> void:
@@ -31,7 +32,7 @@ func _on_area_entered(box: Area2D) -> void:
 	if self.box_type == BoxType.HURTBOX and cbox.box_type == BoxType.ATTACKBOX:
 		hurt_owner(cbox.owner_entity, cbox.damage)
 	elif self.box_type == BoxType.PARRY and cbox.box_type == BoxType.ATTACKBOX:
-		parry_entity(cbox.owner_entity)
+		parry_entity(cbox.owner_entity, cbox.is_perfect_parriable)
 	else:
 		print("Collision detected")
 
@@ -56,14 +57,14 @@ func hurt_owner(entity : AbstractEntity, damage_to_gain : int):
 
 
 # Handler per staggerare l'entità parriata
-func parry_entity(entity : AbstractEntity):
+func parry_entity(entity : AbstractEntity, parried_perfectly : bool):
 	
 	if entity is Player:
 		var player = entity as Player
 		player.get_parried()
 	elif entity is AbstractEnemy:
 		var enemy = entity as AbstractEnemy
-		enemy.get_parried_with_damage(damage)
+		enemy.get_parried_with_damage(damage, parried_perfectly)
 	else:
 		print("Dummy parried")
 
@@ -71,3 +72,9 @@ func parry_entity(entity : AbstractEntity):
 func set_damage(value : int):
 	if box_type == BoxType.ATTACKBOX:
 		self.damage = value
+
+func add_perfetc_parry():
+	is_perfect_parriable = true
+
+func remove_perfect_parry():
+	is_perfect_parriable = false

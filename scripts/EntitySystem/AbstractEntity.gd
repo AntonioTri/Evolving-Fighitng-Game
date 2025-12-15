@@ -19,11 +19,11 @@ enum EntityType {
 # Variabili booleane per conservare gli stati interni e gestire le logiche
 var invulnerability : bool = false
 var direction: int
-
+var current_parry_needed_for_stunn = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	current_parry_needed_for_stunn = stun_parry_needed
 
 # Questa funzione fighissima ed importantissima effettua timefreeze quando chiamata
 func frame_freeze(timescale : float, duration : float) -> void:
@@ -43,17 +43,6 @@ func take_damage(value : int):
 	else:
 		health -= value
 		print("Entity "+ str(entity_type) + " got damaged with " + str(value) + " damage. Current health: " + str(health))
-
-
-# Funzione che gestisce lo stunn
-func get_stunned():
-	pass
-
-
-# Funzione che gestisce lo status di parry
-func get_parried():
-	pass
-
 
 # Gestione dei knockback 
 func get_knockbacked():

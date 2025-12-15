@@ -52,7 +52,7 @@ func on_physics_process(_delta: float) -> void:
 # All'ingresso nello stato viene fatto un casting della reference del nemico
 # a quella del nemico BushGuardian in quanto lo stato è peculiare di questo nemico
 func enter() -> void:
-	var body = owner_body.get_type_reference()
+	var body = owner_enemy.get_type_reference()
 	if body is BushGuardian:
 		bush_guardian = body as BushGuardian
 
@@ -75,7 +75,7 @@ func player_in_melee_range() -> bool:
 	if collision_shape == null: return false
 	var circle := collision_shape.shape as CircleShape2D
 	if circle == null: return false
-	return owner_body.global_position.distance_to(player.global_position) <= circle.radius
+	return owner_enemy.global_position.distance_to(player.global_position) <= circle.radius
 
 
 # Alla fine dell'animazione la process viene sbloccata per continuare i behaviour

@@ -1,6 +1,5 @@
-[gd_scene load_steps=36 format=3 uid="uid://b8jvxjv0xe3ev"]
+[gd_scene load_steps=35 format=3 uid="uid://b8jvxjv0xe3ev"]
 
-[ext_resource type="Script" uid="uid://s78vhw7tv728" path="res://scripts/Enemies/BushGuardian/BushGuardian.gd" id="1_btp17"]
 [ext_resource type="Shader" uid="uid://c6l4nik8csequ" path="res://scripts/utils/hit_flash.gdshader" id="2_o8kih"]
 [ext_resource type="Texture2D" uid="uid://dtw6jt2tyr5xn" path="res://textures/Enemies/BushGuardian/bush_guardian.png" id="2_ocgds"]
 [ext_resource type="PackedScene" uid="uid://cdofpsqi7asw4" path="res://scripts/CollisionBoxSystem/AttackBox.tscn" id="3_kwrcs"]
@@ -758,12 +757,6 @@ radius = 112.0
 
 [node name="BushGuardian" type="CharacterBody2D"]
 collision_layer = 4
-script = ExtResource("1_btp17")
-melee_attack_cd = 4.0
-root_attack_cd = 7.0
-enemy_type = 1
-entity_type = 1
-health = 50
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_b4623")
@@ -858,9 +851,9 @@ position = Vector2(27, 8)
 rotation = -1.5707964
 shape = SubResource("CapsuleShape2D_kcuq2")
 
-[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("owner_enemy", "sprite", "animator", "starting_state")]
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("owner_entity", "sprite", "animator", "starting_state")]
 script = ExtResource("6_b4623")
-owner_enemy = NodePath("..")
+owner_entity = NodePath("..")
 sprite = NodePath("../Sprite2D")
 animator = NodePath("../AnimationPlayer")
 starting_state = NodePath("Spawning")

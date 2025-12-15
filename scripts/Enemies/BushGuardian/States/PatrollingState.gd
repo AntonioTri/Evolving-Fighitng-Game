@@ -19,26 +19,26 @@ func on_physics_process(_delta: float) -> void:
 	
 	# Durante il patrolling se il player è in range e visibile
 	# Si attiva lo stato di chaising
-	if owner_body.can_see_player:
+	if owner_enemy.can_see_player:
 		transition.emit(self, "chaising")
 		return # Si esce dalla funzione per evitare qualsivoglia bug
 	
 	# Scelta della direzione in base al raycasting
-	if owner_body.direction == Direction.RIGHT:
+	if owner_enemy.direction == Direction.RIGHT:
 		if can_walk_right():
 			# Applicazione del vettore velocità
-			owner_body.velocity.x = SPEED
+			owner_enemy.velocity.x = SPEED
 			# Funzione che muove il corpo della entity
-			owner_body.move_and_slide()
+			owner_enemy.move_and_slide()
 		else:
 			transition.emit(self, "rotating")
 	
-	elif owner_body.direction == Direction.LEFT:
+	elif owner_enemy.direction == Direction.LEFT:
 		if can_walk_left():
 			# Applicazione del vettore velocità
-			owner_body.velocity.x = -SPEED
+			owner_enemy.velocity.x = -SPEED
 			# Funzione che muove il corpo della entity
-			owner_body.move_and_slide()
+			owner_enemy.move_and_slide()
 		else:
 			transition.emit(self, "rotating")
 

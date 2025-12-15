@@ -1,6 +1,5 @@
 [gd_scene load_steps=36 format=3 uid="uid://b8jvxjv0xe3ev"]
 
-[ext_resource type="Script" uid="uid://s78vhw7tv728" path="res://scripts/Enemies/BushGuardian/BushGuardian.gd" id="1_btp17"]
 [ext_resource type="Shader" uid="uid://c6l4nik8csequ" path="res://scripts/utils/hit_flash.gdshader" id="2_o8kih"]
 [ext_resource type="Texture2D" uid="uid://dtw6jt2tyr5xn" path="res://textures/Enemies/BushGuardian/bush_guardian.png" id="2_ocgds"]
 [ext_resource type="PackedScene" uid="uid://cdofpsqi7asw4" path="res://scripts/CollisionBoxSystem/AttackBox.tscn" id="3_kwrcs"]
@@ -18,6 +17,57 @@
 [ext_resource type="Script" uid="uid://bokgxvhe0jlwk" path="res://scripts/StateMachine/AtomicStates/DieState.gd" id="16_of8jm"]
 [ext_resource type="Script" uid="uid://xpgkx8vswuob" path="res://scripts/StateMachine/AtomicStates/ParriedState.gd" id="17_btp17"]
 [ext_resource type="Script" uid="uid://cokh623buhmbo" path="res://scripts/StateMachine/AtomicStates/StunnedState.gd" id="18_el7n2"]
+
+[sub_resource type="GDScript" id="GDScript_qfvs5"]
+script/source = "extends AbstractEnemy
+class_name BushGuardian
+
+
+@export var melee_attack_cd : float
+@export var root_attack_cd : float
+var melee_attack_timer : float = 0.0
+var root_attack_timer : float = 0.0
+var melee_ready : bool = false
+var root_ready : bool = false
+
+
+# La funzione process gestisce i cooldown interni in modo da renderli globali
+func _process(delta: float) -> void:
+
+	if melee_attack_timer <= melee_attack_cd: 	melee_attack_timer += delta
+	else: 										melee_ready = true
+
+	if root_attack_timer <= root_attack_cd: 	root_attack_timer += delta
+	else: 										root_ready = true
+
+# Queste funzioni vengono usate per segnalare nel nemico il fatto che abbia usato un attacco
+# rimandandolo in cooldown
+func melee_used():
+	melee_attack_timer = 0.0
+	melee_ready = false
+
+func root_used():
+	root_attack_timer = 0.0
+	root_ready = false
+
+# Questa funzione ritorna una reference di se stessi tipizzata
+# Override della funzione della classe madre. Ogni nemico deve farla
+func get_type_reference() -> BushGuardian:
+	return self
+
+# I due segnali attivano la flag per l'aggiornamento del raycasting
+func _on_sight_of_view_body_entered(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		player = body as Player
+		player_in_range_of_view = true
+
+
+func _on_sight_of_view_body_exited(body: Node2D) -> void:
+	if body.is_in_group(\"player\"):
+		player = null
+		can_see_player = false
+		player_in_range_of_view = false
+"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b4623"]
 shader = ExtResource("2_o8kih")
@@ -758,9 +808,9 @@ radius = 112.0
 
 [node name="BushGuardian" type="CharacterBody2D"]
 collision_layer = 4
-script = ExtResource("1_btp17")
+script = SubResource("GDScript_qfvs5")
 melee_attack_cd = 4.0
-root_attack_cd = 7.0
+root_attack_cd = 5.0
 enemy_type = 1
 entity_type = 1
 health = 50
@@ -858,9 +908,9 @@ position = Vector2(27, 8)
 rotation = -1.5707964
 shape = SubResource("CapsuleShape2D_kcuq2")
 
-[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("owner_enemy", "sprite", "animator", "starting_state")]
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("owner_entity", "sprite", "animator", "starting_state")]
 script = ExtResource("6_b4623")
-owner_enemy = NodePath("..")
+owner_entity = NodePath("..")
 sprite = NodePath("../Sprite2D")
 animator = NodePath("../AnimationPlayer")
 starting_state = NodePath("Spawning")

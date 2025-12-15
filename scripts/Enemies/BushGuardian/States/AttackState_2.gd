@@ -52,4 +52,4 @@ func player_in_melee_range() -> bool:
 	if collision_shape == null: return false
 	var circle := collision_shape.shape as CircleShape2D
 	if circle == null: return false
-	return owner_body.global_position.distance_to(player.global_position) <= circle.radius
+	return owner_enemy.global_position.distance_to(player.global_position) <= circle.radius

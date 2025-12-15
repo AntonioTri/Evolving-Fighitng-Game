@@ -15,7 +15,7 @@ func on_physics_process(_delta: float) -> void:
 	pass
 
 func enter() -> void:
-	var body = owner_body.get_type_reference()
+	var body = owner_enemy.get_type_reference()
 	if body is BushGuardian:
 		bush_guardian = body as BushGuardian
 	
@@ -36,22 +36,22 @@ func spawn_root_attack() -> void:
 	var r_attack: Node2D = root_attack.instantiate()
 
 	# Posizione base
-	r_attack.global_position = owner_body.global_position
+	r_attack.global_position = owner_enemy.global_position
 
 	# Snap a terra
-	var space := owner_body.get_world_2d().direct_space_state
-	var from := owner_body.global_position
+	var space := owner_enemy.get_world_2d().direct_space_state
+	var from := owner_enemy.global_position
 	var to := from + Vector2.DOWN * 2000
 
 	var query := PhysicsRayQueryParameters2D.create(from, to)
-	query.exclude = [owner_body]
+	query.exclude = [owner_enemy]
 
 	var result := space.intersect_ray(query)
 	if result:
 		r_attack.global_position.y = result.position.y
 
 	# Offset e flip in base alla direzione
-	if owner_body.direction == Direction.LEFT:
+	if owner_enemy.direction == Direction.LEFT:
 		r_attack.scale.x = -1
 		r_attack.global_position.x += ROOT_X_OFFSET
 	else:
