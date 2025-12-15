@@ -9,8 +9,8 @@ enum BoxType {
 }
 
 # Variabili export che aiutano a settare i dettagli interni dall'ispettore
-@export var box_type: BoxType
 @export var owner_entity: AbstractEntity
+@export var box_type: BoxType
 @export var damage : int
 
 # La funzione ready collega al segnale area_entered la funzione handler per la collisione

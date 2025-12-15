@@ -1,11 +1,20 @@
-[gd_scene load_steps=24 format=3 uid="uid://b8jvxjv0xe3ev"]
+[gd_scene load_steps=33 format=3 uid="uid://b8jvxjv0xe3ev"]
 
-[ext_resource type="Script" uid="uid://cm0lfcdmrisvs" path="res://scripts/Enemies/BushGuardian/BushGuardian.gd" id="1_ocgds"]
-[ext_resource type="PackedScene" uid="uid://ch3upb0jltbyd" path="res://scripts/SpawnableAttacks/PullingRoots.tscn" id="2_b4623"]
+[ext_resource type="Script" uid="uid://s78vhw7tv728" path="res://scripts/Enemies/BushGuardian/BushGuardian2.gd" id="1_lgdkv"]
 [ext_resource type="Shader" uid="uid://c6l4nik8csequ" path="res://scripts/utils/hit_flash.gdshader" id="2_o8kih"]
 [ext_resource type="Texture2D" uid="uid://dtw6jt2tyr5xn" path="res://textures/Enemies/BushGuardian/bush_guardian.png" id="2_ocgds"]
 [ext_resource type="PackedScene" uid="uid://cdofpsqi7asw4" path="res://scripts/CollisionBoxSystem/AttackBox.tscn" id="3_kwrcs"]
 [ext_resource type="PackedScene" uid="uid://d1m7x0feb7cba" path="res://scripts/CollisionBoxSystem/HurtBox.tscn" id="4_riuym"]
+[ext_resource type="Script" uid="uid://cjg4dh0uo8oty" path="res://scripts/StateMachine/EnemyStateMachine.gd" id="6_b4623"]
+[ext_resource type="Script" uid="uid://d08gnvx02yisc" path="res://scripts/Enemies/BushGuardian/States/SpawningState.gd" id="7_dpjh7"]
+[ext_resource type="Script" uid="uid://bxb82g4nuyxmm" path="res://scripts/Enemies/BushGuardian/States/IdleState.gd" id="7_s8s1x"]
+[ext_resource type="Script" uid="uid://dsoyjrom1p8f2" path="res://scripts/Enemies/BushGuardian/States/PatrollingState.gd" id="9_5qrmh"]
+[ext_resource type="Script" uid="uid://bmg6f4cqvmt2u" path="res://scripts/Enemies/BushGuardian/States/ChaisingState.gd" id="9_dpjh7"]
+[ext_resource type="Script" uid="uid://b05eeo8m8uart" path="res://scripts/Enemies/BushGuardian/States/RotatingState.gd" id="10_muxp1"]
+[ext_resource type="Script" uid="uid://bufgb80kgbhfa" path="res://scripts/Enemies/BushGuardian/States/AttackState_1.gd" id="12_muxp1"]
+[ext_resource type="Script" uid="uid://b3ev28kleueas" path="res://scripts/Enemies/BushGuardian/States/AttackState_2.gd" id="13_pn0pb"]
+[ext_resource type="Script" uid="uid://bxe237cvyp3ni" path="res://scripts/Enemies/BushGuardian/States/RootAttackState.gd" id="14_2442m"]
+[ext_resource type="PackedScene" uid="uid://ch3upb0jltbyd" path="res://scripts/Enemies/BushGuardian/PullingRoots/PullingRoots.tscn" id="15_5q72y"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b4623"]
 shader = ExtResource("2_o8kih")
@@ -290,11 +299,11 @@ tracks/9/keys = {
 tracks/10/type = "method"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath(".")
+tracks/10/path = NodePath("StateMachine/Attack1")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0.8),
+"times": PackedFloat32Array(0.7),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -601,15 +610,15 @@ tracks/7/keys = {
 tracks/8/type = "method"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath(".")
+tracks/8/path = NodePath("StateMachine/RootAttack")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0.4),
+"times": PackedFloat32Array(0.3),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
-"method": &"spawn_pull_attack"
+"method": &"spawn_root_attack"
 }]
 }
 
@@ -736,26 +745,22 @@ _data = {
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uo67k"]
-radius = 254.01772
+radius = 152.54
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ocgds"]
-radius = 63.03174
+radius = 54.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_o8kih"]
 radius = 112.0
 
 [node name="BushGuardian" type="CharacterBody2D"]
 collision_layer = 4
-script = ExtResource("1_ocgds")
-root_attack = ExtResource("2_b4623")
-attack_cd = 1.2
-root_attack_cd = 6.0
+script = ExtResource("1_lgdkv")
+melee_attack_cd = 4.0
+root_attack_cd = 5.0
 enemy_type = 1
-CHAISING_SPEED = 80.0
 entity_type = 1
-stun_parry_needed = 3
-SPEED = 50.0
-health = 30
+health = 50
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_b4623")
@@ -797,6 +802,7 @@ position = Vector2(-27, 16)
 target_position = Vector2(0, 20)
 
 [node name="SightOfView" type="Area2D" parent="."]
+visible = false
 collision_layer = 3
 collision_mask = 3
 
@@ -830,8 +836,8 @@ position = Vector2(0, -32)
 
 [node name="HurtBox" parent="CollisionBoxes" node_paths=PackedStringArray("owner_entity") instance=ExtResource("3_kwrcs")]
 position = Vector2(0, 9)
-box_type = 0
 owner_entity = NodePath("../..")
+box_type = 0
 
 [node name="HurtBox" parent="CollisionBoxes/HurtBox" index="0"]
 position = Vector2(0, -2)
@@ -841,15 +847,55 @@ visible = false
 position = Vector2(0, 8)
 monitoring = false
 monitorable = false
-box_type = 1
 owner_entity = NodePath("../..")
+box_type = 1
 
 [node name="CollisionShape2D" parent="CollisionBoxes/AttackBox" index="0"]
 position = Vector2(27, 8)
 rotation = -1.5707964
 shape = SubResource("CapsuleShape2D_kcuq2")
 
-[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("owner_entity", "sprite", "animator", "starting_state")]
+script = ExtResource("6_b4623")
+owner_entity = NodePath("..")
+sprite = NodePath("../Sprite2D")
+animator = NodePath("../AnimationPlayer")
+starting_state = NodePath("Spawning")
+
+[node name="Spawning" type="Node" parent="StateMachine"]
+script = ExtResource("7_dpjh7")
+
+[node name="Rotating" type="Node" parent="StateMachine"]
+script = ExtResource("10_muxp1")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("7_s8s1x")
+
+[node name="Patrolling" type="Node" parent="StateMachine"]
+script = ExtResource("9_5qrmh")
+SPEED = 80.0
+
+[node name="Chaising" type="Node" parent="StateMachine"]
+script = ExtResource("9_dpjh7")
+CHAISING_SPEED = 100.0
+
+[node name="Attack1" type="Node" parent="StateMachine"]
+script = ExtResource("12_muxp1")
+
+[node name="Attack2" type="Node" parent="StateMachine"]
+script = ExtResource("13_pn0pb")
+
+[node name="RootAttack" type="Node" parent="StateMachine"]
+script = ExtResource("14_2442m")
+root_attack = ExtResource("15_5q72y")
+ROOT_X_OFFSET = 15.0
+
+[connection signal="animation_finished" from="AnimationPlayer" to="StateMachine/Rotating" method="_on_animation_player_animation_finished"]
+[connection signal="animation_finished" from="AnimationPlayer" to="StateMachine/Attack1" method="_on_animation_player_animation_finished"]
+[connection signal="animation_finished" from="AnimationPlayer" to="StateMachine/Attack2" method="_on_animation_player_animation_finished"]
+[connection signal="animation_finished" from="AnimationPlayer" to="StateMachine/RootAttack" method="_on_animation_player_animation_finished"]
+[connection signal="body_entered" from="SightOfView" to="." method="_on_sight_of_view_body_entered"]
+[connection signal="body_exited" from="SightOfView" to="." method="_on_sight_of_view_body_exited"]
 
 [editable path="CollisionBoxes/HurtBox"]
 [editable path="CollisionBoxes/AttackBox"]

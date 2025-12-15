@@ -1,5 +1,5 @@
 extends AbstractEnemy
-class_name BushGuardian
+class_name oldBushGuardian
 
 @onready var animator: AnimationPlayer = $AnimationPlayer
 @onready var melee_range: Area2D = $AttackRanges/MeleeRange
@@ -229,12 +229,6 @@ func spawn_pull_attack():
 
 	# viene aggiunto il nodo alla scena con le impostazioni giuste
 	get_tree().current_scene.add_child(r_attack)
-
-# Script dedicato per gestire il behavior
-func do_walk_animation():
-	if animator.current_animation != "walk":
-		animator.play("walk")
-
 
 # Funzione per tentare di eseguire un combo di attacchi
 # se il player è tropo lontano torna a muoversi verso di lui

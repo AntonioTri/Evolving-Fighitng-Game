@@ -25,15 +25,12 @@ func update(_delta):
 # Funzioni per gestire le animazioni del player in base al movimento
 func play_idle_animation():
 	if animation_player.current_animation != "idle":
-		print("Playing idle animation")
 		animation_player.play("idle")
 
 func play_run_animation():
 	if animation_player.current_animation != "run":
-		print("Playing run animation")
 		animation_player.play("run")
 
 func play_walk_animation():
 	if animation_player.current_animation != "walk":
-		print("Playing walk animation")
 		animation_player.play("walk")

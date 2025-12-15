@@ -188,4 +188,4 @@ position = Vector2(-242, 222)
 box_type = 1
 
 [node name="BushGuardian" parent="." instance=ExtResource("6_p57ef")]
-position = Vector2(941, 243)
+position = Vector2(487, 254)

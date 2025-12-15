@@ -21,8 +21,8 @@ shader = ExtResource("2_k8y5b")
 shader_parameter/flash_strength = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_70d11"]
-radius = 56.008926
-height = 112.01785
+radius = 27.0
+height = 98.0
 
 [sub_resource type="Animation" id="Animation_wr50v"]
 length = 0.001
@@ -456,7 +456,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.3333333, 0.6333333),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [1.75, 1.0, 1.75]
+"values": [1.5, 1.0, 1.75]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -578,7 +578,7 @@ tracks/10/keys = {
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_70d11"]
-radius = 27.0
+radius = 26.000002
 
 [sub_resource type="Animation" id="Animation_70d11"]
 resource_name = "sword_attack_3"
@@ -605,7 +605,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.4, 0.59952056),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [1.5, 1.0, 0.9]
+"values": [1.25, 1.0, 0.9]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -808,8 +808,8 @@ visible = false
 monitoring = false
 monitorable = false
 script = ExtResource("5_70d11")
-box_type = 2
 owner_entity = NodePath("../..")
+box_type = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCombat/ParryBox"]
 position = Vector2(18, -22)
@@ -818,8 +818,8 @@ shape = SubResource("RectangleShape2D_70d11")
 [node name="AttackBox" type="Area2D" parent="PlayerCombat" node_paths=PackedStringArray("owner_entity")]
 visible = false
 script = ExtResource("5_70d11")
-box_type = 1
 owner_entity = NodePath("../..")
+box_type = 1
 damage = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerCombat/AttackBox"]
