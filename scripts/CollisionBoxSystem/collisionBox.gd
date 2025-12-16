@@ -47,8 +47,8 @@ func hurt_owner(entity : AbstractEntity, damage_to_gain : int):
 			return	
 	
 	# Frame Freeze
-	if damage_to_gain > 10:
-		GlobalF.hitstop(0.001, 0.2)
+	if damage_to_gain >= 10:
+		GlobalF.hitstop(0.0, 0.1)
 
 	if owner_entity:
 		owner_entity.take_damage(damage_to_gain)

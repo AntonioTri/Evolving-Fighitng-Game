@@ -82,7 +82,6 @@ func change_state(old_state : EnemyAbstractState, new_state_name: String) -> voi
 		
 	# Viene attivato quello nuovo e vengono settate le giuste referenze allos tato corrente
 	new_state.enter()
-	print("Changing State machine: changing state to ", new_state_name)
 	current_state = new_state
 
 

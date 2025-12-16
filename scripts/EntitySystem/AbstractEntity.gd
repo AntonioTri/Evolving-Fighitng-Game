@@ -11,6 +11,8 @@ enum EntityType {
 
 # Il tipo di entità scelto
 @export var entity_type : EntityType
+# La reference allo spritesheet
+@export var sprite : Sprite2D
 # Il numero di parry necessari per uno stun
 @export var stun_parry_needed : int = 0
 # Il valore in dell'entità
@@ -18,7 +20,6 @@ enum EntityType {
 
 # Variabili booleane per conservare gli stati interni e gestire le logiche
 var invulnerability : bool = false
-var direction: int
 var current_parry_needed_for_stunn = 0
 
 # Called when the node enters the scene tree for the first time.
@@ -43,6 +44,19 @@ func take_damage(value : int):
 	else:
 		health -= value
 		print("Entity "+ str(entity_type) + " got damaged with " + str(value) + " damage. Current health: " + str(health))
+
+
+# Hit flash per quando una entità viene colpita
+func flash_white(sprite: Sprite2D, duration := 0.1):
+	
+	var mat := sprite.material as ShaderMaterial
+	if mat == null:
+		return
+
+	mat.set_shader_parameter("flash_strength", 1.0)
+	var tween := get_tree().create_tween()
+	tween.tween_property(mat, "shader_parameter/flash_strength", 0.0, duration )
+
 
 # Gestione dei knockback 
 func get_knockbacked():

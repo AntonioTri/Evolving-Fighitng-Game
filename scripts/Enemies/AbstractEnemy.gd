@@ -13,6 +13,8 @@ enum EnemyType {
 # Il raycast di visione
 @onready var vision_raycast: RayCast2D = $SightOfView/RayCast2D
 
+var direction: int
+
 # Segnali per eventi di stato hard o di assoluta priorità
 signal died
 signal parried
@@ -60,25 +62,15 @@ func take_damage(value: int):
 
 	health -= value
 	print("Enemy "+ str(enemy_type) + " got damaged with " + str(value) + " damage. Current health: " + str(health))
+	
 	# Hit flash per feedback
-	flash_white(0.2)
+	flash_white(sprite, 0.2)
 
 	if health <= 0:
 		health = 0
 		make_invulnerable()
 		print("Enemy "+ str(enemy_type) + " dieing.")
 		died.emit()
-
-# Hit flash per quando un nemico viene colpito
-func flash_white(duration := 0.1):
-	
-	var mat := $Sprite2D.material as ShaderMaterial
-	if mat == null:
-		return
-
-	mat.set_shader_parameter("flash_strength", 1.0)
-	var tween := get_tree().create_tween()
-	tween.tween_property(mat, "shader_parameter/flash_strength", 0.0, duration )
 
 
 # Quando questa funzione viene chiamata viene sottratto un parry necessario allo stunn
@@ -100,6 +92,11 @@ func get_parried_with_damage(value: int, perfect: bool):
 		else:
 			parried.emit()
 
+func find_direction_relative_to_player(play : Player):
+	var start := play.global_position.x  # posizione del player
+	var end := global_position.x  # posizione del nemico
+	# Calcoliamo la direzione in cui spingere (Lontano dal nemico)
+	return -1 if start > end else 1
 
 func get_type_reference():
 	pass

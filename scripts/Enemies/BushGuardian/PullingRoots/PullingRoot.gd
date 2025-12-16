@@ -1,37 +1,23 @@
 extends SpawnableAttack
 
-func	 _ready():
-	super._ready()
+@export var knockback_force : float
+@export var knockback_angle_degree : int
 
-func do_post_animation_behaviour():
-	print("Pulling attack ended")
+func _ready(): 
+	super._ready()
+	if knockback_angle_degree >= 90 : knockback_angle_degree = 90
+
+func do_post_animation_behaviour(): pass
 
 func affect_player(player: Player):
+	# Lock per impedire che l'effetto venga applicato più volte (spostato qui)
+	is_effect_applayable = false
+
+	# Estrazione della direzione
+	var direction = find_direction_relative_to_player(player)
+	# Chiamata la metodo del player per applicare il knockback
+	player.gain_knockback(knockback_force, knockback_angle_degree, direction)
+	# Tenicamente dovrebbe anche subire del danno
+	# player.take_damage(root_damage)
 	
-	var start := player.global_position
-	var end := global_position  # posizione del nemico
-	var duration := 0.35        # tempo del pull
-
-	# Stunniamo il player per impedire movimenti ed interazioni
-	player.states.apply_stun()
-
-	# Flashamo il player
-	#player.flash_white(0.1)
-
-	var t := 0.0
-	while t < 1.0:
-		t += get_process_delta_time() / duration
-		t = clamp(t, 0.0, 1.0)
-
-		# interpolazione base
-		var pos := start.lerp(end, t)
-
-		# arco parabolico (altezza)
-		var height := -4.0 * pow(t - 0.5, 2) + 1.0
-		pos.y -= height * 80.0
-
-		player.global_position = pos
-		await get_tree().process_frame
-
-	# Riconsegniamo al player la libertà di movimento
-	player.states.remove_stun()
+	

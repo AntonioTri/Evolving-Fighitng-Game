@@ -756,13 +756,14 @@ radius = 54.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_o8kih"]
 radius = 112.0
 
-[node name="BushGuardian" type="CharacterBody2D"]
+[node name="BushGuardian" type="CharacterBody2D" node_paths=PackedStringArray("sprite")]
 collision_layer = 4
 script = ExtResource("1_btp17")
-melee_attack_cd = 4.0
-root_attack_cd = 7.0
+melee_attack_cd = 2.0
+root_attack_cd = 3.0
 enemy_type = 1
 entity_type = 1
+sprite = NodePath("Sprite2D")
 health = 50
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -238,6 +238,8 @@ _data = {
 
 [node name="PullingRoots" type="Node2D" node_paths=PackedStringArray("animator", "sprite", "effect_area")]
 script = ExtResource("1_gg784")
+knockback_force = 500.0
+knockback_angle_degree = 45
 animator = NodePath("AnimationPlayer")
 sprite = NodePath("Sprite2D")
 effect_area = NodePath("Area2D")

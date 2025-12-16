@@ -26,7 +26,6 @@ func enter() -> void:
 func exit() -> void:
 	attack_spawned = false
 
-
 func spawn_root_attack() -> void:
 	if attack_spawned: return
 	if root_attack == null: return
