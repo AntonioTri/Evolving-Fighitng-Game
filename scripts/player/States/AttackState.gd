@@ -26,6 +26,10 @@ func exit() -> void:
 	# Questo è FONDAMENTALE per prevenire che segnali futuri facciano transizioni indesiderate.
 	if combat_system.attack_ended.is_connected(_on_attack_ended):
 		combat_system.attack_ended.disconnect(_on_attack_ended)
+	# Quando la FSM ci porta fuori da qui (anche forzatamente), 
+	# dobbiamo pulire il sistema di combo.
+	player.combat_system._reset_combo_state()
+	print("Uscita dallo stato Attack: Combo resettata.")
 
 # La funzione di transizione viene chiamata dal segnale inviato dal combo manager
 func _on_attack_ended():

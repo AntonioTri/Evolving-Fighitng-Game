@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://c3m00etamojrd"]
+[gd_scene load_steps=40 format=3 uid="uid://c3m00etamojrd"]
 
 [ext_resource type="Script" uid="uid://bf0ujn23gb85h" path="res://scripts/player/PlayerScript.gd" id="1_htcnr"]
 [ext_resource type="Shader" uid="uid://c6l4nik8csequ" path="res://scripts/utils/hit_flash.gdshader" id="2_k8y5b"]
@@ -14,12 +14,14 @@
 [ext_resource type="Script" uid="uid://by8s2l2ytfw3p" path="res://scripts/player/States/IdleState.gd" id="11_mddgh"]
 [ext_resource type="Script" uid="uid://bth4r3syo5gou" path="res://scripts/player/Progression/PlayerProgression.gd" id="11_rnnxu"]
 [ext_resource type="Script" uid="uid://caakjtgly6jm5" path="res://scripts/player/States/MoveState.gd" id="12_41osl"]
-[ext_resource type="Script" uid="uid://cokh623buhmbo" path="res://scripts/StateMachine/AtomicStates/StunnedState.gd" id="12_x7rxi"]
 [ext_resource type="Script" uid="uid://lqlvcogea2fa" path="res://scripts/player/States/AttackState.gd" id="13_htcnr"]
 [ext_resource type="Script" uid="uid://c1dhjg81oqjxu" path="res://scripts/player/States/FallingState.gd" id="14_hhns3"]
 [ext_resource type="Script" uid="uid://2xgltsr3as52" path="res://scripts/player/States/JumpState.gd" id="14_htcnr"]
 [ext_resource type="Script" uid="uid://d3x5t4qeuebl0" path="res://scripts/player/States/DashState.gd" id="14_kudbt"]
 [ext_resource type="Script" uid="uid://f3752ogbjo7c" path="res://scripts/player/States/ParryState.gd" id="15_hhns3"]
+[ext_resource type="Script" uid="uid://ccaosaiadx7vf" path="res://scripts/player/States/BlinkState.gd" id="18_ifisd"]
+[ext_resource type="Script" uid="uid://jkeyh3spjfp0" path="res://scripts/player/States/TPQTEState.gd" id="19_dyu0n"]
+[ext_resource type="Script" uid="uid://u3e4ro83w64m" path="res://scripts/player/States/StunnedState.gd" id="20_hhns3"]
 [ext_resource type="Script" uid="uid://j4n340h8nj7o" path="res://scripts/player/States/DeathState.gd" id="21_hhns3"]
 [ext_resource type="Script" uid="uid://8e88671ornkq" path="res://scripts/player/States/KnockbackState.gd" id="22_hhns3"]
 
@@ -368,7 +370,7 @@ tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [27.0]
 }
 tracks/6/type = "value"
@@ -380,7 +382,7 @@ tracks/6/loop_wrap = true
 tracks/6/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [98.0]
 }
 tracks/7/type = "value"
@@ -404,7 +406,7 @@ tracks/8/loop_wrap = true
 tracks/8/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [Vector2(19, -19)]
 }
 tracks/9/type = "method"
@@ -511,7 +513,7 @@ tracks/5/loop_wrap = true
 tracks/5/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [26.000002]
 }
 tracks/6/type = "value"
@@ -523,7 +525,7 @@ tracks/6/loop_wrap = true
 tracks/6/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [98.0]
 }
 tracks/7/type = "value"
@@ -535,7 +537,7 @@ tracks/7/loop_wrap = true
 tracks/7/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [Vector2(43, -26)]
 }
 tracks/8/type = "value"
@@ -583,7 +585,7 @@ tracks/10/keys = {
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_70d11"]
-radius = 27.0
+radius = 26.000002
 
 [sub_resource type="Animation" id="Animation_70d11"]
 resource_name = "sword_attack_3"
@@ -633,7 +635,7 @@ tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [56.008926]
 }
 tracks/4/type = "value"
@@ -645,7 +647,7 @@ tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
-"update": 0,
+"update": 1,
 "values": [Vector2(34, -6)]
 }
 tracks/5/type = "value"
@@ -753,8 +755,9 @@ collision_mask = 9
 script = ExtResource("1_htcnr")
 jump_height = 70.0
 min_jump_duration = 0.09
-coyote_time_duration = 3.0
+jump_dash_falling_speed = 10.0
 sprite = NodePath("PlayerVisuals/Sprite2D")
+stun_parry_needed = 2
 health = 10000
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -767,7 +770,7 @@ shape = SubResource("CapsuleShape2D_kudbt")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(0, -40)
-zoom = Vector2(1.51, 1.51)
+zoom = Vector2(2.59, 2.59)
 process_callback = 0
 position_smoothing_speed = 10.0
 
@@ -866,6 +869,12 @@ script = ExtResource("13_htcnr")
 [node name="Dash" type="Node" parent="StateMachine"]
 script = ExtResource("14_kudbt")
 
+[node name="Blink" type="Node" parent="StateMachine"]
+script = ExtResource("18_ifisd")
+
+[node name="TPQTE" type="Node" parent="StateMachine"]
+script = ExtResource("19_dyu0n")
+
 [node name="Parry" type="Node" parent="StateMachine"]
 script = ExtResource("15_hhns3")
 
@@ -873,7 +882,7 @@ script = ExtResource("15_hhns3")
 script = ExtResource("11_k6n56")
 
 [node name="Stunned" type="Node" parent="StateMachine"]
-script = ExtResource("12_x7rxi")
+script = ExtResource("20_hhns3")
 
 [node name="Death" type="Node" parent="StateMachine"]
 script = ExtResource("21_hhns3")

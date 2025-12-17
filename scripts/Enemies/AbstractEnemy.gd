@@ -64,7 +64,7 @@ func take_damage(value: int):
 	print("Enemy "+ str(enemy_type) + " got damaged with " + str(value) + " damage. Current health: " + str(health))
 	
 	# Hit flash per feedback
-	flash_white(sprite, 0.2)
+	flash_white(0.2)
 
 	if health <= 0:
 		health = 0

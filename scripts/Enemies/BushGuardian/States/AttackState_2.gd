@@ -38,11 +38,9 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 	
 	# Al termine del secondo attacco se il player è ancora in range melee
 	# si torna allo stato di attacco 1m altrimenti a patrolling
-	if player_in_melee_range():		
-		print("Attack 2 finito, player ancora IN range. Ritorno allo stato di attacco 1.")
+	if player_in_melee_range():
 		transition.emit(self, "attack1")
 	else:
-		print("Attack 2 finito, player NON in range. Ritorno a patrolling")
 		transition.emit(self, "patrolling")
 
 

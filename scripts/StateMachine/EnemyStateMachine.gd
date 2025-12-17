@@ -61,7 +61,7 @@ func change_state(old_state : EnemyAbstractState, new_state_name: String) -> voi
 	
 	# Se il vecchio stato e quello attuale non matchano viene catturato il bug
 	if current_state != old_state:
-		print("Bug found, old state and current state are not matching")
+		print("Enemy Bug found, old state and current state are not matching")
 		return
 	
 	# Caso in cui lo stato sia lo stesso

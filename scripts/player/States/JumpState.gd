@@ -9,24 +9,31 @@ var short_hop_active: bool = false # Flag per gravità aumentata
 
 func enter() -> void:
 	
-	
 	player.inputs.consume_jump() # Consumiamo il salto
 	time_in_state = 0.0
 	short_hop_active = false
-	# Chiama la funzione di salto nel player
 	
 	# Solo se il player non è a terra, usiamo il jump_velocity normale.
 	# Questo perché l'input bufferizzato potrebbe essere stato catturato anche 
 	# in aria, ma vogliamo fare il salto solo se siamo a terra o in Coyote Time.
-	if player.is_on_floor() or player.is_coyote_time_active():
-		jump() 
-	else:
-		# Se l'input è arrivato in aria, ma non possiamo saltare, 
-		# usciamo immediatamente dallo stato ( torniamo a falling )
-		transition.emit(self, "Falling") 
+	if player.is_on_floor() or player.is_coyote_time_active(): jump() 
+	# Se l'input è arrivato in aria, ma non possiamo saltare, 
+	# usciamo immediatamente dallo stato ( torniamo a falling )
+	else: transition.emit(self, "Falling") 
 
 
 func on_physics_process(_delta: float) -> void:
+	
+	# Controllo sul dash, prioritario
+	if player.inputs.is_dash_buffered() and player.can_dash:
+		match player.progressions.current_dash:
+			player.progressions.DashType.DASH:
+				transition.emit(self, "Dash") 
+				return
+			player.progressions.DashType.BLINK:
+				transition.emit(self, "Blink")
+				return
+	
 	time_in_state += _delta # Aggiorna il tempo
 
 	# Salto ad altezza variabile

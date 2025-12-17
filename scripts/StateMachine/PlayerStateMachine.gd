@@ -39,14 +39,16 @@ func change_state(old_state : PlayerAbstractState, new_state_name: String) -> vo
 	
 	# Se il vecchio stato e quello attuale non matchano viene catturato il bug
 	if current_state != old_state:
-		print("Bug found, old state and current state are not matching")
+		print("Player Bug found, old state and current state are not matching")
+		print(old_state.name)
+		print(current_state.name)
 		return
 	
 	# Caso in cui lo stato sia lo stesso
 	if new_state_name == current_state.name.to_lower():
 		print("Player alredy in the " + current_state.name.to_lower() + " state.")
 		return
-
+	
 	# Viene estratto lo stato dal dizionario
 	var new_state = states.get(new_state_name.to_lower())
 	
@@ -57,7 +59,7 @@ func change_state(old_state : PlayerAbstractState, new_state_name: String) -> vo
 	# Se lo stato è stato trovato quello corrente viene spento
 	if current_state:
 		current_state.exit()
-		
+	
 	# Viene attivato quello nuovo e vengono settate le giuste referenze allos tato corrente
 	new_state.enter()
 	print("State machine: changing PLAYER state to ", new_state_name)
@@ -108,8 +110,8 @@ func force_change_state(new_state_name: String):
 
 	if current_state:
 		current_state.exit()
-	new_state.enter()
 	current_state = new_state
+	current_state.enter()
 
 
 func change_to_knockback(state_name: String, knockback_direction: int = 0):
@@ -118,14 +120,10 @@ func change_to_knockback(state_name: String, knockback_direction: int = 0):
 	if current_state:
 		current_state.exit()
 
-	# **********************************************
-	# LOGICA DI SETUP PARAMETRIZZATA
-	# **********************************************
 	# Controlla se il nuovo stato ha il metodo setup_knockback
 	if state_name == "Knockback" and new_state.has_method("setup_knockback"):
 		# Se sì, chiama il setup PRIMA di entrare
 		new_state.setup_knockback(knockback_direction)
-	# **********************************************
 
 	current_state = new_state
 	current_state.enter()

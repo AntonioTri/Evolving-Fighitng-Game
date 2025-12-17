@@ -47,7 +47,7 @@ func take_damage(value : int):
 
 
 # Hit flash per quando una entità viene colpita
-func flash_white(sprite: Sprite2D, duration := 0.1):
+func flash_white(duration := 0.1):
 	
 	var mat := sprite.material as ShaderMaterial
 	if mat == null:

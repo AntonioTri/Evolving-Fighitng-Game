@@ -30,10 +30,13 @@ signal attack_ended
 # ===================================================================
 
 func _ready() -> void:
-	# Collega il segnale dell'AnimationPlayer qui per gestire la fine dell'attacco.
+	# Colleghiamo il segnale dell'AnimationPlayer qui per gestire la fine dell'attacco.
 	if animator:
 		animator.animation_finished.connect(_on_animation_player_animation_finished)
-		
+	#Colleghiamo il segnale per gestire il parry
+	player.parried.connect(_on_player_stunned)
+
+
 # Chiamato dall'AttackState quando viene premuto l'input Attack
 func start_combo():
 	# Caso 1: Non stiamo attaccando (primo attacco o dopo reset completo)
@@ -45,12 +48,6 @@ func start_combo():
 	if can_chain and current_attack.next_attack and not in_recovery:
 		_enqueue_next_attack()
 
-# Aggiornamento della direzione della hitbox (chiamato dal player._physics_process)
-# Consiglio: Chiamalo da _physics_process del Player o da un metodo chiamato dallo stato Attack
-func update_hitbox_direction():
-	# Assumo che last_direction.x sia usato per la direzione
-	# Se last_direction è un enum (LEFT/RIGHT), usa la logica appropriata.
-	self.scale.x = -1 if player.last_direction == player.Direction.LEFT else 1
 
 # ===================================================================
 #  LOGICA DI ESECUZIONE (CHIAMATO DA start_combo o dai segnali)
@@ -74,8 +71,7 @@ func _play_attack():
 		return
 		
 	animator.play(current_attack.animation_name)
-	print("Attacco : ", current_attack.animation_name)
-	
+
 # ===================================================================
 #  FINESTRE DI TIMING (CHIAMATE DALL'ANIMATION PLAYER)
 # ===================================================================
@@ -97,6 +93,15 @@ func start_recovery():
 		
 	# Nessun attacco in coda, entriamo in recovery (il player non può agire)
 	in_recovery = true
+
+# Funzione per gestire le animazioni prima di chiamare lo stato di stunned
+func _on_player_stunned():
+	current_attack = null
+	queued_attack = null
+	can_chain = false
+	in_recovery = false
+	animator.stop()
+	player.stunned.emit()
 
 
 # Callback di Godot: si attiva quando l'AnimationPlayer finisce

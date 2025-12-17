@@ -16,12 +16,25 @@ func on_physics_process(_delta: float) -> void:
 	# Transizione allo stato di Falling se il player non è sul terreno
 	if not player.is_on_floor():
 		player.velocity.y += player.get_gravity().y * _delta
-
-
+	
 	# Se vale 0 si torna allo stato di Idle
 	if player.inputs.direction == Direction.STILL:
 		transition.emit(self, "Idle")
 		return
+	
+	# Qui abbiamo un punto delicato, in base al tipo di evoluzione del dash
+	# andiamo in uno stato o in un altro. 
+	# NOTA: lo stato di TPQTE è uno speciale stato che viene chiamato solo se il blink
+	# era un blink perfetto, ecco perchè qui non è presente la casistica
+	if player.inputs.is_dash_buffered() and player.can_dash:
+		print("Dash used in move: ", player.can_dash)
+		match player.progressions.current_dash:
+			player.progressions.DashType.DASH:
+				transition.emit(self, "Dash") 
+				return
+			player.progressions.DashType.BLINK:
+				transition.emit(self, "Blink")
+				return
 	
 	# Se viene premuto il salto e non siamo sul pavimento controlliamo il coyote time
 	# Se il coyote time non è disponibile allore non si fa nulla, se invece era disponibile si va in jump

@@ -16,8 +16,6 @@ var direction: int = 0
 func _physics_process(_delta):
 	# Gestione Movimento
 	var x_input = int(Input.get_axis("move_left", "move_right"))
-	# In un sidescroller 2D solitamente la Y non serve per il movimento standard, 
-	# ma se hai scale o altro aggiungila.
 	direction = x_input
 
 func _unhandled_input(event):
@@ -35,6 +33,9 @@ func _unhandled_input(event):
 		
 	if event.is_action_pressed("parry"):
 		_last_parry_time = Time.get_ticks_msec() / 1000.0
+	
+	if event.is_action_pressed("testing"):
+		pass
 
 # --- API PER GLI STATI ---
 
@@ -46,9 +47,11 @@ func is_jump_buffered() -> bool:
 func is_dash_buffered() -> bool:
 	return _is_action_buffered(_last_dash_time)
 
+# Controlla se c'è un attacco "in canna"
 func is_attack_buffered() -> bool:
 	return _is_action_buffered(_last_attack_time)
 
+# Controlla se c'è un parry "in canna"
 func is_parry_buffered() -> bool:
 	return _is_action_buffered(_last_parry_time)
 
