@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ComboAttack" load_steps=3 format=3 uid="uid://bmb83b6kkdc57"]
+
+[ext_resource type="Script" uid="uid://b6leb55we2s6s" path="res://scripts/comboSystem/ComboAttack.gd" id="1_2ean6"]
+[ext_resource type="Resource" uid="uid://jg7soauxcuxd" path="res://scripts/player/Comboes/SwordMeleeCombo/Attack_2.tres" id="1_6im47"]
+
+
+[resource]
+script = ExtResource("1_2ean6")
+animation_name = "sword_attack_1"
+combo_window_start = 0.5
+combo_window_end = 0.8
+next_attack = ExtResource("1_6im47")
+metadata/_custom_type_script = "uid://b6leb55we2s6s"

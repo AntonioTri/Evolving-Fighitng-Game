@@ -2,13 +2,13 @@ extends  Node2D
 class_name SpawnableAttack
 
 # Variabili da inserire durante la creazione della scena per lo spawnabile
-@export var animator: AnimationPlayer
-@export var sprite: Sprite2D
-@export var effect_area: Area2D
+@export var animator : AnimationPlayer
+@export var sprite : Sprite2D
+@export var effect_area : Area2D
 @export var animation_name : StringName
+@export var damage : int = 0
 
 var is_effect_applayable : bool = true
-
 
 # La funzione readi quando l'oggetto è istanziato controlla se questo abbia tutte le componenti
 # e poi avvia l'animazione, l'animator poi fa il resto
@@ -20,17 +20,14 @@ func _ready():
 		return
 
 	else:
-		
 		animator.animation_finished.connect(_animation_finished)
 		effect_area.body_entered.connect(_body_entered)
-
 		animator.play(animation_name)
 
 
 # Quando l'attacco finisce viene rimosso dalla scena dopo aver eseguito un comportamento di fine
 # se implementato, altrimenti muore ebbasta
 func _animation_finished(anim_name: StringName) -> void:
-	
 	# Funzione astratta da implementare nelle classi figlie
 	do_post_animation_behaviour()
 	if anim_name == animation_name:
@@ -45,6 +42,11 @@ func _body_entered(body: Node2D) -> void:
 		# Funzione astratta da implementare nelle classi figlie
 		affect_player(player)
 
+func find_direction_relative_to_player(player : Player):
+	var start := player.global_position.x  # posizione del player
+	var end := global_position.x  # posizione del nemico
+	# Calcoliamo la direzione in cui spingere (Lontano dal nemico)
+	return -1 if start > end else 1
 
 # Funzione da implementare nelle classi figlie
 func do_post_animation_behaviour():
