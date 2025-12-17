@@ -835,7 +835,6 @@ shape = SubResource("CircleShape2D_ocgds")
 shape = SubResource("CircleShape2D_o8kih")
 
 [node name="CollisionBoxes" type="Node2D" parent="."]
-visible = false
 position = Vector2(0, -32)
 
 [node name="HurtBox" parent="CollisionBoxes" node_paths=PackedStringArray("owner_entity") instance=ExtResource("3_kwrcs")]

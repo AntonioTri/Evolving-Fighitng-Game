@@ -32,8 +32,8 @@ shader = ExtResource("2_k8y5b")
 shader_parameter/flash_strength = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_70d11"]
-radius = 56.008926
-height = 112.01785
+radius = 27.0
+height = 98.0
 
 [sub_resource type="Animation" id="Animation_wr50v"]
 length = 0.001
@@ -330,10 +330,10 @@ tracks/2/path = NodePath("CollisoinBoxes/AttackBox:monitoring")
 tracks/2/interp = 0
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [true, false]
+"values": [false, true, false]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -342,10 +342,10 @@ tracks/3/path = NodePath("CollisoinBoxes/AttackBox:monitorable")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [true, false]
+"values": [false, true, false]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -354,7 +354,7 @@ tracks/4/path = NodePath("CollisoinBoxes/AttackBox:visible")
 tracks/4/interp = 0
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.3),
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -366,7 +366,7 @@ tracks/5/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:radius
 tracks/5/interp = 0
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [27.0]
@@ -378,7 +378,7 @@ tracks/6/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:height
 tracks/6/interp = 0
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [98.0]
@@ -390,7 +390,7 @@ tracks/7/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape")
 tracks/7/interp = 0
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [SubResource("CapsuleShape2D_70d11")]
@@ -402,7 +402,7 @@ tracks/8/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:position")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(19, -19)]
@@ -473,7 +473,7 @@ tracks/2/path = NodePath("CollisoinBoxes/AttackBox:visible")
 tracks/2/interp = 0
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.23333333, 0.3333333),
+"times": PackedFloat32Array(0.1, 0.23333333, 0.3333333),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -485,7 +485,7 @@ tracks/3/path = NodePath("CollisoinBoxes/AttackBox:monitoring")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.23333333, 0.3333333),
+"times": PackedFloat32Array(0.1, 0.23333333, 0.3333333),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -497,7 +497,7 @@ tracks/4/path = NodePath("CollisoinBoxes/AttackBox:monitorable")
 tracks/4/interp = 0
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.23333333, 0.3333333),
+"times": PackedFloat32Array(0.1, 0.23333333, 0.3333333),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -509,7 +509,7 @@ tracks/5/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:radius
 tracks/5/interp = 0
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [26.000002]
@@ -521,7 +521,7 @@ tracks/6/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:height
 tracks/6/interp = 0
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [98.0]
@@ -533,7 +533,7 @@ tracks/7/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:position")
 tracks/7/interp = 0
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(43, -26)]
@@ -545,7 +545,7 @@ tracks/8/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [SubResource("CapsuleShape2D_70d11")]
@@ -619,7 +619,7 @@ tracks/2/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape")
 tracks/2/interp = 0
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(7.450581e-09),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [SubResource("CircleShape2D_70d11")]
@@ -631,7 +631,7 @@ tracks/3/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:radius
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(7.450581e-09),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [56.008926]
@@ -643,7 +643,7 @@ tracks/4/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:position")
 tracks/4/interp = 0
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0),
+"times": PackedFloat32Array(0.1),
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(34, -6)]
@@ -655,7 +655,7 @@ tracks/5/path = NodePath("CollisoinBoxes/AttackBox:monitoring")
 tracks/5/interp = 0
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.3),
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -667,7 +667,7 @@ tracks/6/path = NodePath("CollisoinBoxes/AttackBox:monitorable")
 tracks/6/interp = 0
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.3),
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -679,7 +679,7 @@ tracks/7/path = NodePath("CollisoinBoxes/AttackBox:visible")
 tracks/7/interp = 0
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.3),
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [false, true, false]
@@ -755,7 +755,7 @@ jump_height = 70.0
 min_jump_duration = 0.09
 coyote_time_duration = 3.0
 sprite = NodePath("PlayerVisuals/Sprite2D")
-health = 50
+health = 10000
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
