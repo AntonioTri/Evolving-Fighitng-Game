@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dcqr3xhn26ek0" path="res://scripts/comboSystem/ComboScript.gd" id="3_mdl7e"]
 [ext_resource type="Resource" uid="uid://bmb83b6kkdc57" path="res://scripts/player/Comboes/SwordMeleeCombo/Attack_1.tres" id="4_qu4a1"]
 [ext_resource type="Script" uid="uid://d3ior4y5ods00" path="res://scripts/CollisionBoxSystem/collisionBox.gd" id="5_70d11"]
+[ext_resource type="Script" uid="uid://c3db5lsriq3j" path="res://scripts/player/PerfectThingDetector/PlayerPerfetcDodgeDetector.gd" id="8_dyu0n"]
 [ext_resource type="Script" uid="uid://kf2p8vn6kh7e" path="res://scripts/player/Visuals/Player_visuals.gd" id="8_k6n56"]
 [ext_resource type="Script" uid="uid://duuff4tqenm0b" path="res://scripts/StateMachine/PlayerStateMachine.gd" id="10_rnnxu"]
 [ext_resource type="Script" uid="uid://c67pbntjrdr8r" path="res://scripts/player/States/SpawningState.gd" id="11_41osl"]
@@ -32,10 +33,6 @@ height = 48.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hd152"]
 shader = ExtResource("2_k8y5b")
 shader_parameter/flash_strength = 0.0
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_70d11"]
-radius = 27.0
-height = 98.0
 
 [sub_resource type="Animation" id="Animation_wr50v"]
 length = 0.001
@@ -102,7 +99,7 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:radius")
+tracks/5/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:shape:radius")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
@@ -114,7 +111,7 @@ tracks/5/keys = {
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:height")
+tracks/6/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:shape:height")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
@@ -126,7 +123,7 @@ tracks/6/keys = {
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:position")
+tracks/7/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:position")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
@@ -138,19 +135,19 @@ tracks/7/keys = {
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape")
+tracks/8/path = NodePath("CollisoinBoxes/ParryBox:monitoring")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [SubResource("CapsuleShape2D_70d11")]
+"values": [false]
 }
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("CollisoinBoxes/ParryBox:monitoring")
+tracks/9/path = NodePath("CollisoinBoxes/ParryBox:monitorable")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
@@ -162,22 +159,10 @@ tracks/9/keys = {
 tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("CollisoinBoxes/ParryBox:monitorable")
+tracks/10/path = NodePath("CollisoinBoxes/ParryBox:visible")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/11/type = "value"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("CollisoinBoxes/ParryBox:visible")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -334,7 +319,7 @@ tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
+"update": 0,
 "values": [false, true, false]
 }
 tracks/3/type = "value"
@@ -346,7 +331,7 @@ tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
+"update": 0,
 "values": [false, true, false]
 }
 tracks/4/type = "value"
@@ -358,64 +343,52 @@ tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
+"update": 0,
 "values": [false, true, false]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:radius")
+tracks/5/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:position")
 tracks/5/interp = 0
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0.1),
+"times": PackedFloat32Array(0.033333335),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [27.0]
+"update": 0,
+"values": [Vector2(19, -19)]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:height")
+tracks/6/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:shape:radius")
 tracks/6/interp = 0
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0.1),
+"times": PackedFloat32Array(0.033333335),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [98.0]
+"update": 0,
+"values": [27.0]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape")
+tracks/7/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:shape:height")
 tracks/7/interp = 0
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0.1),
+"times": PackedFloat32Array(0.033333335),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [SubResource("CapsuleShape2D_70d11")]
+"update": 0,
+"values": [98.0]
 }
-tracks/8/type = "value"
+tracks/8/type = "method"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:position")
+tracks/8/path = NodePath("CollisoinBoxes/AttackBox")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0.1),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(19, -19)]
-}
-tracks/9/type = "method"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("CollisoinBoxes/AttackBox")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
@@ -423,13 +396,13 @@ tracks/9/keys = {
 "method": &"set_damage"
 }]
 }
-tracks/10/type = "method"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("CombatSystem")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
+tracks/9/type = "method"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("CombatSystem")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
 "times": PackedFloat32Array(0.3, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
@@ -477,7 +450,7 @@ tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0.1, 0.23333333, 0.3333333),
 "transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
+"update": 0,
 "values": [false, true, false]
 }
 tracks/3/type = "value"
@@ -489,7 +462,7 @@ tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0.1, 0.23333333, 0.3333333),
 "transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
+"update": 0,
 "values": [false, true, false]
 }
 tracks/4/type = "value"
@@ -501,64 +474,52 @@ tracks/4/loop_wrap = true
 tracks/4/keys = {
 "times": PackedFloat32Array(0.1, 0.23333333, 0.3333333),
 "transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
+"update": 0,
 "values": [false, true, false]
 }
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:radius")
+tracks/5/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:position")
 tracks/5/interp = 0
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0.1),
+"times": PackedFloat32Array(0.033333335),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [26.000002]
+"update": 0,
+"values": [Vector2(43, -26)]
 }
 tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:height")
+tracks/6/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:shape:radius")
 tracks/6/interp = 0
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0.1),
+"times": PackedFloat32Array(0.033333335),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [98.0]
+"update": 0,
+"values": [26.000002]
 }
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:position")
+tracks/7/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:shape:height")
 tracks/7/interp = 0
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0.1),
+"times": PackedFloat32Array(0.033333335),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(43, -26)]
+"update": 0,
+"values": [98.0]
 }
-tracks/8/type = "value"
+tracks/8/type = "method"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape")
+tracks/8/path = NodePath("CollisoinBoxes/AttackBox")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0.1),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [SubResource("CapsuleShape2D_70d11")]
-}
-tracks/9/type = "method"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("CollisoinBoxes/AttackBox")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
@@ -566,13 +527,13 @@ tracks/9/keys = {
 "method": &"set_damage"
 }]
 }
-tracks/10/type = "method"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("CombatSystem")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
+tracks/9/type = "method"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("CombatSystem")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
 "times": PackedFloat32Array(0.25, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
@@ -584,9 +545,6 @@ tracks/10/keys = {
 }]
 }
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_70d11"]
-radius = 26.000002
-
 [sub_resource type="Animation" id="Animation_70d11"]
 resource_name = "sword_attack_3"
 length = 0.7
@@ -594,12 +552,12 @@ tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/path = NodePath("PlayerVisuals/Sprite2D:frame")
-tracks/0/interp = 1
+tracks/0/interp = 0
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.099999994, 0.2, 0.3, 0.4, 0.53333336, 0.6333334),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
+"update": 0,
 "values": [70, 71, 72, 73, 74, 75, 76]
 }
 tracks/1/type = "value"
@@ -617,88 +575,88 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape")
+tracks/2/path = NodePath("CollisoinBoxes/AttackBox:monitoring")
 tracks/2/interp = 0
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0.1),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [SubResource("CircleShape2D_70d11")]
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [false, true, false]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:shape:radius")
+tracks/3/path = NodePath("CollisoinBoxes/AttackBox:monitorable")
 tracks/3/interp = 0
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.1),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [56.008926]
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [false, true, false]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("CollisoinBoxes/AttackBox/CollisionShape2D:position")
+tracks/4/path = NodePath("CollisoinBoxes/AttackBox:visible")
 tracks/4/interp = 0
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0.1),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(34, -6)]
+"times": PackedFloat32Array(0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [false, true, false]
 }
-tracks/5/type = "value"
+tracks/5/type = "method"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("CollisoinBoxes/AttackBox:monitoring")
-tracks/5/interp = 0
+tracks/5/path = NodePath("CollisoinBoxes/AttackBox")
+tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [false, true, false]
-}
-tracks/6/type = "value"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("CollisoinBoxes/AttackBox:monitorable")
-tracks/6/interp = 0
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"times": PackedFloat32Array(0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [false, true, false]
-}
-tracks/7/type = "value"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("CollisoinBoxes/AttackBox:visible")
-tracks/7/interp = 0
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"times": PackedFloat32Array(0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [false, true, false]
-}
-tracks/8/type = "method"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("CollisoinBoxes/AttackBox")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [14],
 "method": &"set_damage"
 }]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.03333333),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(31, -4)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:shape:radius")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.03333333),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [60.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("CollisoinBoxes/AttackBox/SwordAttackSwipe:shape:height")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.03333333),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [120.0]
 }
 
 [sub_resource type="Animation" id="Animation_v6fml"]
@@ -745,6 +703,10 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_70d11"]
 size = Vector2(16, 31)
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_70d11"]
+radius = 27.0
+height = 98.0
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hhns3"]
 radius = 8.0
 height = 42.0
@@ -778,6 +740,7 @@ position_smoothing_speed = 10.0
 script = ExtResource("8_k6n56")
 
 [node name="Sprite2D" type="Sprite2D" parent="PlayerVisuals"]
+z_index = 10
 material = SubResource("ShaderMaterial_hd152")
 position = Vector2(0, -48)
 texture = ExtResource("2_wr50v")
@@ -788,6 +751,7 @@ region_rect = Rect2(0, 0, 3584, 2048)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="PlayerVisuals"]
 root_node = NodePath("../..")
+callback_mode_process = 0
 libraries = {
 &"": SubResource("AnimationLibrary_s8145")
 }
@@ -817,12 +781,13 @@ owner_entity = NodePath("../..")
 box_type = 1
 damage = 5
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CollisoinBoxes/AttackBox"]
+[node name="SwordAttackSwipe" type="CollisionShape2D" parent="CollisoinBoxes/AttackBox"]
 position = Vector2(11, -6)
 rotation = -1.5707964
 shape = SubResource("CapsuleShape2D_70d11")
 
 [node name="HurtBox" type="Area2D" parent="CollisoinBoxes" node_paths=PackedStringArray("owner_entity")]
+z_index = 15
 script = ExtResource("5_70d11")
 owner_entity = NodePath("../..")
 
@@ -835,6 +800,10 @@ script = ExtResource("11_bigoh")
 
 [node name="ProgressionManage" type="Node" parent="."]
 script = ExtResource("11_rnnxu")
+
+[node name="PerfectDodgeDetector" type="Node" parent="."]
+script = ExtResource("8_dyu0n")
+perfect_dodge_window_ms = 150
 
 [node name="CombatSystem" type="Node" parent="." node_paths=PackedStringArray("animator")]
 script = ExtResource("3_mdl7e")

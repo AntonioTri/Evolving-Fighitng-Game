@@ -35,7 +35,7 @@ func _unhandled_input(event):
 		_last_parry_time = Time.get_ticks_msec() / 1000.0
 	
 	if event.is_action_pressed("testing"):
-		pass
+		$"../ProgressionManage".evolve_dash()
 
 # --- API PER GLI STATI ---
 

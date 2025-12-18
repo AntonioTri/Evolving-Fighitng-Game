@@ -42,7 +42,6 @@ func hurt_owner(entity : AbstractEntity, damage_to_gain : int):
 	
 	# Rimozione del fuoco amico tra i nemici
 	if entity is AbstractEnemy:
-		print("Enemy taking damage")
 		var enemy = entity as AbstractEnemy
 		if enemy == owner_entity: return
 	

@@ -62,7 +62,7 @@ func change_state(old_state : PlayerAbstractState, new_state_name: String) -> vo
 	
 	# Viene attivato quello nuovo e vengono settate le giuste referenze allos tato corrente
 	new_state.enter()
-	print("State machine: changing PLAYER state to ", new_state_name)
+	# print("State machine: changing PLAYER state to ", new_state_name)
 	current_state = new_state
 
 

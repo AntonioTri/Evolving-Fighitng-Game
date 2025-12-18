@@ -34,6 +34,7 @@ var knockback_angle_degree: float = 37.0 # Angolo di respingimento in gradi
 @onready var collisoin_boxes: Node2D = $CollisoinBoxes
 @onready var combat_system: ComboSystem = $CombatSystem
 @onready var state_machine: PlayerFineteStateMahcine = $StateMachine
+@onready var perfect_dodge_detector: PlayerPerfectDodgeDetector = $PerfectDodgeDetector
 
 # Segnali per eventi di stato hard o di assoluta priorità
 signal died
@@ -46,7 +47,11 @@ var last_direction := Direction.STILL
 func _ready() -> void:
 	
 	disable_collision_boxes()
-
+	
+	# Collegamento tra il segnale emesso dall'annunciatore di attacchi al perfect dodge detector
+	AttackEmitter.attack_announced.connect( perfect_dodge_detector.register_attack )
+	AttackEmitter.attack_ended.connect( perfect_dodge_detector.remove_attack_from_queue )
+	
 	# --- INIZIALIZZAZIONE DEGLI STATI ---
 	# 1. Ottengo lo stato Jump dalla FSM
 	var jump_state = state_machine.get_state("Jump")
@@ -65,11 +70,9 @@ func _process(_delta):
 	# Aggiornamento del cooldown del dash
 	if not can_dash:
 		dash_cooldown_timer += _delta
-		print("Charging dash: ", dash_cooldown_timer)
 		if dash_cooldown_timer >= dash_cooldown:
 			can_dash = true
 			dash_cooldown_timer = 0.0
-			print("Dash ready")
 
 # La physic process aggiorna delle variabili di stato importanti
 func _physics_process(_delta):
@@ -118,6 +121,14 @@ func get_parried():
 		print("Emitting stunned")
 		current_parry_needed_for_stunn = stun_parry_needed
 		stunned.emit()
+
+# Questa funzione ritorna true o false in base a che venga chiamata quando
+# esiste un attacco doggiabile perfettamente, quindi un attaco che sta per arrivare
+# entro un limite di tempo di PERFECT DODGE registrato nel corrispondente nodo di gestione,
+# oppure no
+
+func try_perfect_dodge() -> bool:
+	return perfect_dodge_detector.can_perfect_dodge()
 
 # La funzine per applicare al player un knockback con forza direzione ed angolo
 func gain_knockback(force : float, angle : int, direction : int):

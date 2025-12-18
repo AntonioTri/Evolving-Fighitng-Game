@@ -51,3 +51,15 @@ func player_in_melee_range() -> bool:
 	var circle := collision_shape.shape as CircleShape2D
 	if circle == null: return false
 	return owner_enemy.global_position.distance_to(player.global_position) <= circle.radius
+
+
+func on_attack_windup():
+	var attack_box := melee_range.get_node("AttackBox") as CollisionBox
+
+	AttackEmitter.announce_attack(
+		owner_enemy,
+		attack_box,
+		attack_box.damage,
+		true,
+		true
+	)

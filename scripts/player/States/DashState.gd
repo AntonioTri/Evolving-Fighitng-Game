@@ -88,8 +88,8 @@ func exit() -> void:
 	pass
 
 
-# Attualmente la funzione ritorna sempre false in quando non è implementata la logica
-# di dash perfetto o di blink perfetto
+# La funzione ritorna true se è possibile fare un dodge perfetto
 func is_dash_perfect() -> bool:
-	return false
+	return player.try_perfect_dodge()
+
 	

@@ -1,7 +1,11 @@
 extends EnemyAbstractState
 
 var bush_guardian : BushGuardian
+# Questa variabile conserva l'id globale dell'attacco in modo da poterlo 
+# eliminare dalla que di dodge possibili o di parry possibili quando finisce
+var attack_id : int 
 @onready var melee_range: Area2D = $"../../AttackRanges/MeleeRange"
+@onready var attack_box: CollisionBox = $"../../CollisionBoxes/AttackBox"
 
 var lock_process : bool = false
 
@@ -77,6 +81,17 @@ func player_in_melee_range() -> bool:
 	if circle == null: return false
 	return owner_enemy.global_position.distance_to(player.global_position) <= circle.radius
 
+
+func add_attack_to_dodgable():
+	# Registriamo l'id dell'attacco
+	attack_id = AttackEmitter.announce_attack(owner_enemy, attack_box, attack_box.damage, true, true)
+
+func remove_attack_from_dodging_list():
+	# Usando l'id dell'attacco lo eliminiamo dalla coda degl attacchi schivabili o parriabili
+	AttackEmitter.remove_attack(attack_id)
+
+func porcodio():
+	pass
 
 # Alla fine dell'animazione la process viene sbloccata per continuare i behaviour
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
