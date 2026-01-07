@@ -6,6 +6,7 @@ var jump_gravity : float = 0.0
 var fall_gravity : float = 0.0
 var time_in_state: float = 0.0 # Contatore del tempo
 var short_hop_active: bool = false # Flag per gravità aumentata
+@onready var landing_raycast: RayCast2D = $"../../PlayerVisuals/LandingRaycast"
 
 func enter() -> void:
 	
@@ -52,8 +53,9 @@ func on_physics_process(_delta: float) -> void:
 	# Animazione e direzione
 	# Assumo che 'sprite' sia una variabile di riferimento definita nella classe base o nel Player
 	# Se 'sprite' non è definito qui, usa player.visuals.flip_h o la tua struttura specifica
-	# 
+	
 	sprite.flip_h = true if player.last_direction == Direction.LEFT else false
+	do_jump_animation()
 	
 	# Transizione ad idle se il player tocca terra
 	if player.is_on_floor() and player.velocity.y > 0: transition.emit(self, "Idle")
@@ -87,3 +89,23 @@ func initialize_physics_constants():
 	jump_velocity = (( 2.0 * player.jump_height ) / player.jump_time_to_peak ) * -1
 	jump_gravity = (( -2.0 * player.jump_height ) / ( player.jump_time_to_peak * player.jump_time_to_peak )) * -1
 	fall_gravity = (( -2.0 * player.jump_height ) / ( player.jump_time_to_descend * player.jump_time_to_descend )) * -1
+
+# con questa funzione viene riprodotta una animazione di salto in salita 
+# ed in discesa in base alla velocità verticale del player
+func do_jump_animation():
+	# CONTROLLO ATTERRAGGIO
+	if landing_raycast.is_colliding() and player.velocity.y > 80:
+		if animator.current_animation != "landing":
+			animator.play("landing")
+	
+	elif (player.velocity.y >= -80) and (player.velocity.y <= 80):
+		if animator.current_animation != "hovering_in_air":
+			animator.play("hovering_in_air")
+	
+	elif player.velocity.y < -80:
+		if animator.current_animation != "jump_up":
+			animator.play("jump_up")
+	
+	elif player.velocity.y > 80:
+		if animator.current_animation != "jump_down":
+			animator.play("jump_down")

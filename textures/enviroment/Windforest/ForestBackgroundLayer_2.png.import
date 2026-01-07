@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bh3kjfx0c5kh3"
-path="res://.godot/imported/ForestTileset.png-e855d7543615254ba91ac360b282d3e4.ctex"
+uid="uid://oijfsciwows1"
+path="res://.godot/imported/ForestBackgroundLayer_2.png-3e8c3881974f0ab8792134b0427386fe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/enviroment/ForestTileset.png"
-dest_files=["res://.godot/imported/ForestTileset.png-e855d7543615254ba91ac360b282d3e4.ctex"]
+source_file="res://textures/enviroment/Windforest/ForestBackgroundLayer_2.png"
+dest_files=["res://.godot/imported/ForestBackgroundLayer_2.png-3e8c3881974f0ab8792134b0427386fe.ctex"]
 
 [params]
 

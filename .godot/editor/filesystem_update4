@@ -1,13 +1,5 @@
+res://scenes/testing_level.tscn
 res://scripts/player/Player.tscn
-res://scripts/player/States/DashState.gd
-res://scripts/player/Inputs/PlayerInputComponent.gd
-res://scripts/player/PerfectThingDetector/AttackEvent.gd
-res://scripts/player/PerfectThingDetector/AttackAnnouncer.gd
-res://scripts/Enemies/BushGuardian/BushGuardian.tscn
-res://scripts/Enemies/BushGuardian/States/AttackState_1.gd
-res://scripts/StateMachine/EnemyAbstractState.gd
-res://scripts/player/PerfectThingDetector/PlayerPerfetcDodgeDetector.gd
-res://scripts/player/PlayerScript.gd
-res://scripts/Enemies/BushGuardian/States/AttackState_2.gd
-res://scripts/StateMachine/PlayerStateMachine.gd
-res://scripts/CollisionBoxSystem/collisionBox.gd
+res://scripts/player/States/JumpState.gd
+res://scripts/player/States/FallingState.gd
+res://scripts/player/States/MoveState.gd

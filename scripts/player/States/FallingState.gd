@@ -2,6 +2,7 @@ extends PlayerAbstractState
 class_name AirState
 
 @export var FALLING_MOVEMENT_MULTIPLIER : float = 0.7
+@onready var landing_raycast: RayCast2D = $"../../PlayerVisuals/LandingRaycast"
 
 func on_physics_process(_delta: float) -> void:
 	# 1. Applicazione corretta della gravità
@@ -24,6 +25,18 @@ func on_physics_process(_delta: float) -> void:
 			transition.emit(self, "Idle")
 	
 	player.move_and_slide()
+	do_falling_animation()
 
 func enter() -> void:
-	animator.play("idle")
+	if animator.current_animation != "hovering_in_air":
+		animator.play("hovering_in_air")
+
+func do_falling_animation():
+	
+	if player.velocity.y > 80:
+		if animator.current_animation != "jump_down":
+			animator.play("jump_down")
+	
+	elif landing_raycast.is_colliding() and player.velocity.y > 80:
+		if animator.current_animation != "landing":
+			animator.play("landing")

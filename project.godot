@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="EvolvingFightingGame"
-run/main_scene="uid://dfy3214wwgw4w"
+run/main_scene="uid://w8hd66h2qsb3"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 

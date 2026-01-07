@@ -5,6 +5,7 @@ extends PlayerAbstractState
 
 # Reference al nodo che contiene le collision box per ruotarle
 @onready var collisoin_boxes: Node2D = $"../../CollisoinBoxes"
+@onready var landing_raycast: RayCast2D = $"../../PlayerVisuals/LandingRaycast"
 
 func on_process(_delta: float) -> void:
 	pass
@@ -27,7 +28,6 @@ func on_physics_process(_delta: float) -> void:
 	# NOTA: lo stato di TPQTE è uno speciale stato che viene chiamato solo se il blink
 	# era un blink perfetto, ecco perchè qui non è presente la casistica
 	if player.inputs.is_dash_buffered() and player.can_dash:
-		print("Dash used in move: ", player.can_dash)
 		match player.progressions.current_dash:
 			player.progressions.DashType.DASH:
 				transition.emit(self, "Dash") 
@@ -54,17 +54,24 @@ func on_physics_process(_delta: float) -> void:
 	
 	# Rotazione degli sprite
 	sprite.flip_h = true if player.last_direction == Direction.LEFT else false
+	do_falling_animation()
 	# Rotazione delle collisionboxes
 	collisoin_boxes.scale.x = -1.0 if player.last_direction == Direction.LEFT else 1.0
 
 	# Applicazione della fisica
 	player.move_and_slide()
-	
-
 
 
 func enter() -> void:
 	animator.play("walk")
 
-func exit() -> void:
-	pass
+
+func do_falling_animation():
+	
+	if player.velocity.y > 0 and player.velocity.y < 40:
+		if animator.current_animation != "hovering_in_air":
+			animator.play("hovering_in_air")
+	
+	elif landing_raycast.is_colliding() and player.velocity.y >= 40:
+		if animator.current_animation != "landing":
+			animator.play("landing")

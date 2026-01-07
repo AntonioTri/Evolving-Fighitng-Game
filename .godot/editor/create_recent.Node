@@ -1,3 +1,10 @@
+Sprite2D
+Parallax2D
+Node2D
+ParallaxBackground
+RayCast2D
+ParallaxLayer
+TileMapLayer
 CollisionShape2D
 CollisionBox
 Node
